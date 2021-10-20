@@ -7,6 +7,10 @@ UTF-8, UTF-8 BOM
 
 C++ win32 api app
 
+https://user-images.githubusercontent.com/10168979/138095489-65b83f2e-f88e-4083-bb1f-9ad3b11df4f8.mp4
+
+<br><br><br>
+
 コンポーネントを使わないでwin32 apiのみで作成中  
 HTTP GET, POST, WebSocket, WebView2, node-pty
 
@@ -32,7 +36,6 @@ npm config set msvs_version 2017
 Buffer type Doubly Linked List  
 (双方向リンクリスト)
 
-https://user-images.githubusercontent.com/10168979/137014196-db204db1-33bc-4e23-ae31-cef9a826d06c.mp4
 
 node.js(directry) keymap.js  
 ![キャプチャ](https://user-images.githubusercontent.com/10168979/136787864-9a89943e-151f-4ab6-858c-61fc96eed4f5.PNG)
