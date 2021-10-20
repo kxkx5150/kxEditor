@@ -75,6 +75,12 @@ void ContMgr::change_webview()
 {
     m_containers[m_active_cont_no].tabs->m_active_tab->change_webview();
 }
+void ContMgr::change_cmdview()
+{
+    m_containers[m_active_cont_no].tabs->m_active_tab->change_cmdview();
+}
+
+
 void ContMgr::change_txtview()
 {
     m_containers[m_active_cont_no].tabs->m_active_tab->change_txtview();

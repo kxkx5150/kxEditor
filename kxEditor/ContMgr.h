@@ -31,6 +31,7 @@ public:
     LONG send_msg_container(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
     void send_resize_msg_webview(HWND hwnd);
     void change_webview();
+    void change_cmdview();
     void change_txtview();
 
 

@@ -45,6 +45,7 @@ public:
     void close_document();
     void resize_view(HDWP hdwp, int width, int height, int x, int y);
     void change_webview();
+    void change_cmdview();
     void change_txtview();
     void change_view();
     void resize_webview();

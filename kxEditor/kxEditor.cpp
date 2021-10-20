@@ -274,7 +274,10 @@ LRESULT CALLBACK WndCommandProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
         m_contmgr->change_webview();
         return 0;
     }
-
+    case ID_MODE_TERMINAL: {
+        m_contmgr->change_cmdview();
+        return 0;
+    }           
     case ID_TEXTVIEW_OPEN: {
         m_contmgr->change_txtview();
         return 0;

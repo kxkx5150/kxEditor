@@ -78,6 +78,12 @@ void Tab::change_webview()
     change_view();
     m_webmgr->create_webview(m_tabid, L"https://www.google.com/");
 }
+void Tab::change_cmdview()
+{
+    m_is_txt = false;
+    change_view();
+    m_webmgr->create_webview(m_tabid, L"http://localhost:8890");
+}
 void Tab::change_txtview()
 {
     m_is_txt = true;
