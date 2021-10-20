@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8" /><title>Hello</title></head>
+</head>
+<body>
+    <div>
+        <h3>send json</h3>
+        <div>
+            <button id="send_btn">Send WebSocket</button>
+        </div>
+    </div>
+    <div>
+        <textarea id="text" rows="30" cols="100"></textarea>
+    </div>
+    <script>
+        let json = {
+            type:"keydown",
+            keycode:37,
+            ctrl:false,
+            shift:false,
+            alt:false,
+            contno:0,
+            tabno:0,
+            mode:0
+        };
+        document.getElementById("text").value = JSON.stringify(json);
+
+        document.getElementById("send_btn").addEventListener("click",(e)=>{
+            let json = JSON.parse(document.getElementById("text").value);
+            sock.send(JSON.stringify(json));
+            console.log(json);
+        })
+
+        var sock = new WebSocket('ws://127.0.0.1:3001');
+        sock.addEventListener('open',function(e){
+            sock.addEventListener('message',function(e){
+                console.log(JSON.parse(e.data));
+            });
+        });
+    </script>
+</body>
+</html>

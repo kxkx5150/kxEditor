@@ -1,0 +1,67 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31717.71
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "kxEditor", "kxEditor\kxEditor.vcxproj", "{3E19A59D-CBFF-4E29-929D-27ECB546BB89}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UspLib", "UspLib\UspLib.vcxproj", "{7379AF6E-3FBC-4D0F-9C15-D93FE8EE53C1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+		Template|x64 = Template|x64
+		Template|x86 = Template|x86
+		Unicode Debug|x64 = Unicode Debug|x64
+		Unicode Debug|x86 = Unicode Debug|x86
+		Unicode Release|x64 = Unicode Release|x64
+		Unicode Release|x86 = Unicode Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3E19A59D-CBFF-4E29-929D-27ECB546BB89}.Debug|x64.ActiveCfg = Debug|Win32
+		{3E19A59D-CBFF-4E29-929D-27ECB546BB89}.Debug|x64.Build.0 = Debug|Win32
+		{3E19A59D-CBFF-4E29-929D-27ECB546BB89}.Debug|x86.ActiveCfg = Debug|Win32
+		{3E19A59D-CBFF-4E29-929D-27ECB546BB89}.Debug|x86.Build.0 = Debug|Win32
+		{3E19A59D-CBFF-4E29-929D-27ECB546BB89}.Release|x64.ActiveCfg = Release|x64
+		{3E19A59D-CBFF-4E29-929D-27ECB546BB89}.Release|x64.Build.0 = Release|x64
+		{3E19A59D-CBFF-4E29-929D-27ECB546BB89}.Release|x86.ActiveCfg = Release|Win32
+		{3E19A59D-CBFF-4E29-929D-27ECB546BB89}.Release|x86.Build.0 = Release|Win32
+		{3E19A59D-CBFF-4E29-929D-27ECB546BB89}.Template|x64.ActiveCfg = Debug|x64
+		{3E19A59D-CBFF-4E29-929D-27ECB546BB89}.Template|x64.Build.0 = Debug|x64
+		{3E19A59D-CBFF-4E29-929D-27ECB546BB89}.Template|x86.ActiveCfg = Release|Win32
+		{3E19A59D-CBFF-4E29-929D-27ECB546BB89}.Template|x86.Build.0 = Release|Win32
+		{3E19A59D-CBFF-4E29-929D-27ECB546BB89}.Unicode Debug|x64.ActiveCfg = Debug|x64
+		{3E19A59D-CBFF-4E29-929D-27ECB546BB89}.Unicode Debug|x64.Build.0 = Debug|x64
+		{3E19A59D-CBFF-4E29-929D-27ECB546BB89}.Unicode Debug|x86.ActiveCfg = Debug|Win32
+		{3E19A59D-CBFF-4E29-929D-27ECB546BB89}.Unicode Debug|x86.Build.0 = Debug|Win32
+		{3E19A59D-CBFF-4E29-929D-27ECB546BB89}.Unicode Release|x64.ActiveCfg = Release|x64
+		{3E19A59D-CBFF-4E29-929D-27ECB546BB89}.Unicode Release|x64.Build.0 = Release|x64
+		{3E19A59D-CBFF-4E29-929D-27ECB546BB89}.Unicode Release|x86.ActiveCfg = Release|Win32
+		{3E19A59D-CBFF-4E29-929D-27ECB546BB89}.Unicode Release|x86.Build.0 = Release|Win32
+		{7379AF6E-3FBC-4D0F-9C15-D93FE8EE53C1}.Debug|x64.ActiveCfg = Debug|Win32
+		{7379AF6E-3FBC-4D0F-9C15-D93FE8EE53C1}.Debug|x64.Build.0 = Debug|Win32
+		{7379AF6E-3FBC-4D0F-9C15-D93FE8EE53C1}.Debug|x86.ActiveCfg = Debug|Win32
+		{7379AF6E-3FBC-4D0F-9C15-D93FE8EE53C1}.Debug|x86.Build.0 = Debug|Win32
+		{7379AF6E-3FBC-4D0F-9C15-D93FE8EE53C1}.Release|x64.ActiveCfg = Release|Win32
+		{7379AF6E-3FBC-4D0F-9C15-D93FE8EE53C1}.Release|x86.ActiveCfg = Release|Win32
+		{7379AF6E-3FBC-4D0F-9C15-D93FE8EE53C1}.Release|x86.Build.0 = Release|Win32
+		{7379AF6E-3FBC-4D0F-9C15-D93FE8EE53C1}.Template|x64.ActiveCfg = Template|Win32
+		{7379AF6E-3FBC-4D0F-9C15-D93FE8EE53C1}.Template|x86.ActiveCfg = Template|Win32
+		{7379AF6E-3FBC-4D0F-9C15-D93FE8EE53C1}.Template|x86.Build.0 = Template|Win32
+		{7379AF6E-3FBC-4D0F-9C15-D93FE8EE53C1}.Unicode Debug|x64.ActiveCfg = Unicode Debug|Win32
+		{7379AF6E-3FBC-4D0F-9C15-D93FE8EE53C1}.Unicode Debug|x86.ActiveCfg = Unicode Debug|Win32
+		{7379AF6E-3FBC-4D0F-9C15-D93FE8EE53C1}.Unicode Debug|x86.Build.0 = Unicode Debug|Win32
+		{7379AF6E-3FBC-4D0F-9C15-D93FE8EE53C1}.Unicode Release|x64.ActiveCfg = Unicode Release|Win32
+		{7379AF6E-3FBC-4D0F-9C15-D93FE8EE53C1}.Unicode Release|x86.ActiveCfg = Unicode Release|Win32
+		{7379AF6E-3FBC-4D0F-9C15-D93FE8EE53C1}.Unicode Release|x86.Build.0 = Unicode Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1CB50FBE-A8C3-4396-B7F0-744A8CB1DBFB}
+	EndGlobalSection
+EndGlobal

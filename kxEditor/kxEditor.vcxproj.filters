@@ -1,0 +1,172 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Tabs">
+      <UniqueIdentifier>{a11e0c1a-68a0-4233-bc15-7b2118ab3bb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tabs">
+      <UniqueIdentifier>{813851af-3d56-426e-8639-4f5fa62b8dc2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\TextEditor">
+      <UniqueIdentifier>{9d02eb5a-bbaf-4f97-945f-aac24536707b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="framework.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="kxEditor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TextEditor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Unicode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StatusBar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="kxEditor_define.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EditView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DocMgr.h">
+      <Filter>Header Files\Tabs</Filter>
+    </ClInclude>
+    <ClInclude Include="LinkedList.h">
+      <Filter>Header Files\Tabs</Filter>
+    </ClInclude>
+    <ClInclude Include="Tab.h">
+      <Filter>Header Files\Tabs</Filter>
+    </ClInclude>
+    <ClInclude Include="Tabs.h">
+      <Filter>Header Files\Tabs</Filter>
+    </ClInclude>
+    <ClInclude Include="ContMgr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeMgr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CmdMgr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WebView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WebMgr.h">
+      <Filter>Header Files\Tabs</Filter>
+    </ClInclude>
+    <ClInclude Include="WebTab.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="kxEditor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EditView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StatusBar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Unicode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Uniscribe.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="u16chars.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DocMgr.cpp">
+      <Filter>Source Files\Tabs</Filter>
+    </ClCompile>
+    <ClCompile Include="DocMgr_Input.cpp">
+      <Filter>Source Files\Tabs</Filter>
+    </ClCompile>
+    <ClCompile Include="LinkedList.cpp">
+      <Filter>Source Files\Tabs</Filter>
+    </ClCompile>
+    <ClCompile Include="LinkedList_Dev.cpp">
+      <Filter>Source Files\Tabs</Filter>
+    </ClCompile>
+    <ClCompile Include="Tab.cpp">
+      <Filter>Source Files\Tabs</Filter>
+    </ClCompile>
+    <ClCompile Include="Tabs.cpp">
+      <Filter>Source Files\Tabs</Filter>
+    </ClCompile>
+    <ClCompile Include="TextEditor.cpp">
+      <Filter>Source Files\TextEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="TextEditor_Font.cpp">
+      <Filter>Source Files\TextEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="TextEditor_Mouse.cpp">
+      <Filter>Source Files\TextEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="TextEditor_Scroll.cpp">
+      <Filter>Source Files\TextEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="TextEditor_Settings.cpp">
+      <Filter>Source Files\TextEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="ContMgr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeMgr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CmdMgr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WebView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WebMgr.cpp">
+      <Filter>Source Files\Tabs</Filter>
+    </ClCompile>
+    <ClCompile Include="WebTab.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="kxEditor.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="small.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="kxEditor.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+</Project>
