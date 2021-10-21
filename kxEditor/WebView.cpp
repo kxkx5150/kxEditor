@@ -12,35 +12,39 @@ WebView::WebView(HWND hWnd)
 WebView::~WebView()
 {
 }
-void WebView::callbak_store_ctrlwebview(int tabid, wil::com_ptr<ICoreWebView2Controller> webvctrl)
-{
-    //m_webvctrls[tabid] = webvctrl;
-}
-void WebView::callbak_store_optswebview(int tabid, wil::com_ptr<ICoreWebView2Controller> webvaddbar)
-{
-    //m_webvaddbars[tabid] = webvaddbar;
-}
 HRESULT WebView::ResizeUIWebViews(int tabid)
 {
     if (m_controlsWebViews[tabid] != nullptr) {
         RECT bounds;
         GetClientRect(m_hWnd, &bounds);
-        bounds.bottom = bounds.top + GetDPIAwareBound(c_uiBarHeight);
-        bounds.bottom += 1;
+
+        if (m_showbar_tabs[tabid]) {
+            bounds.bottom = bounds.top + GetDPIAwareBound(c_uiBarHeight);
+            bounds.bottom += 1;
+        } else {
+            bounds.bottom = 0;
+        }
         RETURN_IF_FAILED(m_controlsControllers[tabid]->put_Bounds(bounds));
+
     }
 
     if (m_optionsWebViews[tabid] != nullptr) {
         RECT bounds;
         GetClientRect(m_hWnd, &bounds);
-        bounds.top = GetDPIAwareBound(c_uiBarHeight);
+
+        if (m_showbar_tabs[tabid]) {
+            bounds.top = GetDPIAwareBound(c_uiBarHeight);
+        } else {
+            bounds.top = 0;
+        }
+
         bounds.bottom = bounds.top + GetDPIAwareBound(c_optionsDropdownHeight);
         bounds.left = bounds.right - GetDPIAwareBound(c_optionsDropdownWidth);
         RETURN_IF_FAILED(m_optionsControllers[tabid]->put_Bounds(bounds));
     }
 
     if (m_tabsmap[tabid].find(m_activeTabIds[tabid]) != m_tabsmap[tabid].end())
-        m_tabsmap[tabid].at(m_activeTabIds[tabid])->ResizeWebView();
+        m_tabsmap[tabid].at(m_activeTabIds[tabid])->ResizeWebView(m_showbar_tabs[tabid]);
 
     HWND wvWindow = GetWindow(m_hWnd, GW_CHILD);
     while (wvWindow != nullptr) {
@@ -50,9 +54,10 @@ HRESULT WebView::ResizeUIWebViews(int tabid)
 
     return S_OK;
 }
-void WebView::create_webview(int tabid, LPCWSTR url)
+void WebView::create_webview(int tabid, LPCWSTR url, BOOL showbar)
 {
     m_url = url;
+    m_showbar_tabs[tabid] = showbar;
     SetUIMessageBroker(tabid);
     std::wstring userDataDirectory = GetAppDataDirectory();
     userDataDirectory.append(L"\\User Data");
@@ -224,7 +229,7 @@ void WebView::SetUIMessageBroker(int tabid)
             } break;
             case MG_SWITCH_TAB: {
                 size_t tabId = args.at(L"tabId").as_number().to_uint32();
-                SwitchToTab(tabId,tabid);
+                SwitchToTab(tabId, tabid);
 
             } break;
             case MG_CLOSE_TAB: {
@@ -269,7 +274,7 @@ void WebView::SetUIMessageBroker(int tabid)
 HRESULT WebView::SwitchToTab(size_t tabId, int wtabid)
 {
     size_t previousActiveTab = m_activeTabIds[wtabid];
-    RETURN_IF_FAILED(m_tabsmap[wtabid].at(tabId)->ResizeWebView());
+    RETURN_IF_FAILED(m_tabsmap[wtabid].at(tabId)->ResizeWebView(m_showbar_tabs[wtabid]));
     RETURN_IF_FAILED(m_tabsmap[wtabid].at(tabId)->m_contentController->put_IsVisible(TRUE));
     m_activeTabIds[wtabid] = tabId;
 
@@ -398,34 +403,34 @@ HRESULT WebView::HandleTabNavCompleted(int wtabid, size_t tabId, ICoreWebView2* 
         L"    return faviconURI;"
         L"})();");
 
-    CheckFailure(webview->ExecuteScript(getTitleScript.c_str(), 
-        Callback<ICoreWebView2ExecuteScriptCompletedHandler>([this, tabId, wtabid](HRESULT error, PCWSTR result) -> HRESULT {
-        RETURN_IF_FAILED(error);
+    CheckFailure(webview->ExecuteScript(getTitleScript.c_str(),
+                     Callback<ICoreWebView2ExecuteScriptCompletedHandler>([this, tabId, wtabid](HRESULT error, PCWSTR result) -> HRESULT {
+                         RETURN_IF_FAILED(error);
 
-        web::json::value jsonObj = web::json::value::parse(L"{}");
-        jsonObj[L"message"] = web::json::value(MG_UPDATE_TAB);
-        jsonObj[L"args"] = web::json::value::parse(L"{}");
-        jsonObj[L"args"][L"title"] = web::json::value::parse(result);
-        jsonObj[L"args"][L"tabId"] = web::json::value::number(tabId);
+                         web::json::value jsonObj = web::json::value::parse(L"{}");
+                         jsonObj[L"message"] = web::json::value(MG_UPDATE_TAB);
+                         jsonObj[L"args"] = web::json::value::parse(L"{}");
+                         jsonObj[L"args"][L"title"] = web::json::value::parse(result);
+                         jsonObj[L"args"][L"tabId"] = web::json::value::number(tabId);
 
-        CheckFailure(PostJsonToWebView(jsonObj, m_controlsWebViews[wtabid].get()), L"Can't update title.");
-        return S_OK;
-    }).Get()),
+                         CheckFailure(PostJsonToWebView(jsonObj, m_controlsWebViews[wtabid].get()), L"Can't update title.");
+                         return S_OK;
+                     }).Get()),
         L"Can't update title.");
 
-    CheckFailure(webview->ExecuteScript(getFaviconURI.c_str(), 
-        Callback<ICoreWebView2ExecuteScriptCompletedHandler>([this, tabId, wtabid](HRESULT error, PCWSTR result) -> HRESULT {
-        RETURN_IF_FAILED(error);
+    CheckFailure(webview->ExecuteScript(getFaviconURI.c_str(),
+                     Callback<ICoreWebView2ExecuteScriptCompletedHandler>([this, tabId, wtabid](HRESULT error, PCWSTR result) -> HRESULT {
+                         RETURN_IF_FAILED(error);
 
-        web::json::value jsonObj = web::json::value::parse(L"{}");
-        jsonObj[L"message"] = web::json::value(MG_UPDATE_FAVICON);
-        jsonObj[L"args"] = web::json::value::parse(L"{}");
-        jsonObj[L"args"][L"uri"] = web::json::value::parse(result);
-        jsonObj[L"args"][L"tabId"] = web::json::value::number(tabId);
+                         web::json::value jsonObj = web::json::value::parse(L"{}");
+                         jsonObj[L"message"] = web::json::value(MG_UPDATE_FAVICON);
+                         jsonObj[L"args"] = web::json::value::parse(L"{}");
+                         jsonObj[L"args"][L"uri"] = web::json::value::parse(result);
+                         jsonObj[L"args"][L"tabId"] = web::json::value::number(tabId);
 
-        CheckFailure(PostJsonToWebView(jsonObj, m_controlsWebViews[wtabid].get()), L"Can't update favicon.");
-        return S_OK;
-    }).Get()),
+                         CheckFailure(PostJsonToWebView(jsonObj, m_controlsWebViews[wtabid].get()), L"Can't update favicon.");
+                         return S_OK;
+                     }).Get()),
         L"Can't update favicon");
 
     web::json::value jsonObj = web::json::value::parse(L"{}");

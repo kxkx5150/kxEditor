@@ -74,7 +74,7 @@ protected:
 
 public:
     static std::unique_ptr<WebTab> CreateNewTab(HWND hWnd, int tabid, ICoreWebView2Environment* env, size_t id, bool shouldBeActive, LPCWSTR url);
-    HRESULT ResizeWebView();
+    HRESULT ResizeWebView(BOOL showbar = true);
 
 protected:
     HRESULT Init(ICoreWebView2Environment* env, bool shouldBeActive, LPCWSTR url);

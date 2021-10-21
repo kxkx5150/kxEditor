@@ -82,7 +82,7 @@ void Tab::change_cmdview()
 {
     m_is_txt = false;
     change_view();
-    m_webmgr->create_webview(m_tabid, L"http://localhost:8890");
+    m_webmgr->create_webview(m_tabid, L"http://localhost:8890", false);
 }
 void Tab::change_txtview()
 {

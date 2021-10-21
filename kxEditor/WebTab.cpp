@@ -2,7 +2,7 @@
 #include "WebView.h"
 int WebTab::m_wtabid = 0;
 
-std::unique_ptr<WebTab> WebTab::CreateNewTab(HWND hWnd, int tabid,ICoreWebView2Environment* env, size_t id, bool shouldBeActive, LPCWSTR url)
+std::unique_ptr<WebTab> WebTab::CreateNewTab(HWND hWnd, int tabid, ICoreWebView2Environment* env, size_t id, bool shouldBeActive, LPCWSTR url)
 {
     m_wtabid = tabid;
     std::unique_ptr<WebTab> tab = std::make_unique<WebTab>();
@@ -28,7 +28,7 @@ HRESULT WebTab::Init(ICoreWebView2Environment* env, bool shouldBeActive, LPCWSTR
             RETURN_IF_FAILED(m_contentWebView->add_HistoryChanged(
                 Callback<ICoreWebView2HistoryChangedEventHandler>(
                     [this, browserWindow](ICoreWebView2* webview, IUnknown* args) -> HRESULT {
-                        WebView::CheckFailure(browserWindow->HandleTabHistoryUpdate(m_wtabid,m_tabId, webview), L"Can't update go back/forward buttons.");
+                        WebView::CheckFailure(browserWindow->HandleTabHistoryUpdate(m_wtabid, m_tabId, webview), L"Can't update go back/forward buttons.");
                         return S_OK;
                     })
                     .Get(),
@@ -37,7 +37,7 @@ HRESULT WebTab::Init(ICoreWebView2Environment* env, bool shouldBeActive, LPCWSTR
             RETURN_IF_FAILED(m_contentWebView->add_SourceChanged(
                 Callback<ICoreWebView2SourceChangedEventHandler>(
                     [this, browserWindow](ICoreWebView2* webview, ICoreWebView2SourceChangedEventArgs* args) -> HRESULT {
-                        WebView::CheckFailure(browserWindow->HandleTabURIUpdate(m_wtabid,m_tabId, webview), L"Can't update address bar");
+                        WebView::CheckFailure(browserWindow->HandleTabURIUpdate(m_wtabid, m_tabId, webview), L"Can't update address bar");
                         return S_OK;
                     })
                     .Get(),
@@ -46,7 +46,7 @@ HRESULT WebTab::Init(ICoreWebView2Environment* env, bool shouldBeActive, LPCWSTR
             RETURN_IF_FAILED(m_contentWebView->add_NavigationStarting(
                 Callback<ICoreWebView2NavigationStartingEventHandler>(
                     [this, browserWindow](ICoreWebView2* webview, ICoreWebView2NavigationStartingEventArgs* args) -> HRESULT {
-                        WebView::CheckFailure(browserWindow->HandleTabNavStarting(m_wtabid,m_tabId, webview), L"Can't update reload button");
+                        WebView::CheckFailure(browserWindow->HandleTabNavStarting(m_wtabid, m_tabId, webview), L"Can't update reload button");
                         return S_OK;
                     })
                     .Get(),
@@ -55,7 +55,7 @@ HRESULT WebTab::Init(ICoreWebView2Environment* env, bool shouldBeActive, LPCWSTR
             RETURN_IF_FAILED(m_contentWebView->add_NavigationCompleted(
                 Callback<ICoreWebView2NavigationCompletedEventHandler>(
                     [this, browserWindow](ICoreWebView2* webview, ICoreWebView2NavigationCompletedEventArgs* args) -> HRESULT {
-                        WebView::CheckFailure(browserWindow->HandleTabNavCompleted(m_wtabid,m_tabId, webview, args), L"Can't udpate reload button");
+                        WebView::CheckFailure(browserWindow->HandleTabNavCompleted(m_wtabid, m_tabId, webview, args), L"Can't udpate reload button");
                         return S_OK;
                     })
                     .Get(),
@@ -67,7 +67,7 @@ HRESULT WebTab::Init(ICoreWebView2Environment* env, bool shouldBeActive, LPCWSTR
             RETURN_IF_FAILED(m_securityStateChangedReceiver->add_DevToolsProtocolEventReceived(
                 Callback<ICoreWebView2DevToolsProtocolEventReceivedEventHandler>(
                     [this, browserWindow](ICoreWebView2* webview, ICoreWebView2DevToolsProtocolEventReceivedEventArgs* args) -> HRESULT {
-                        WebView::CheckFailure(browserWindow->HandleTabSecurityUpdate(m_wtabid,m_tabId, webview, args), L"Can't udpate security icon");
+                        WebView::CheckFailure(browserWindow->HandleTabSecurityUpdate(m_wtabid, m_tabId, webview, args), L"Can't udpate security icon");
                         return S_OK;
                     })
                     .Get(),
@@ -98,15 +98,20 @@ void WebTab::SetMessageBroker()
     m_messageBroker = Callback<ICoreWebView2WebMessageReceivedEventHandler>(
         [this](ICoreWebView2* webview, ICoreWebView2WebMessageReceivedEventArgs* eventArgs) -> HRESULT {
             WebView* browserWindow = reinterpret_cast<WebView*>(GetWindowLongPtr(m_parentHWnd, GWLP_USERDATA));
-            WebView::CheckFailure(browserWindow->HandleTabMessageReceived(m_wtabid,m_tabId, webview, eventArgs), L"");
+            WebView::CheckFailure(browserWindow->HandleTabMessageReceived(m_wtabid, m_tabId, webview, eventArgs), L"");
             return S_OK;
         });
 }
-HRESULT WebTab::ResizeWebView()
+HRESULT WebTab::ResizeWebView(BOOL showbar)
 {
     RECT bounds;
     GetClientRect(m_parentHWnd, &bounds);
     WebView* browserWindow = reinterpret_cast<WebView*>(GetWindowLongPtr(m_parentHWnd, GWLP_USERDATA));
-    bounds.top += browserWindow->GetDPIAwareBound(WebView::c_uiBarHeight);
+
+    if (showbar)
+        bounds.top += browserWindow->GetDPIAwareBound(WebView::c_uiBarHeight);
+    else
+        bounds.top = 0;
+
     return m_contentController->put_Bounds(bounds);
 }

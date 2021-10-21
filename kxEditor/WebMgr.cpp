@@ -11,9 +11,9 @@ WebMgr::WebMgr(HWND hwnd, WebView* webeditr, int tabid)
 WebMgr::~WebMgr()
 {
 }
-void WebMgr::create_webview(int tabid, LPCWSTR url)
+void WebMgr::create_webview(int tabid, LPCWSTR url, BOOL showbar)
 {
-    m_webeditr->create_webview(tabid, url);
+    m_webeditr->create_webview(tabid, url, showbar);
 }
 void WebMgr::resize_webview()
 {

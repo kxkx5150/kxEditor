@@ -85,6 +85,8 @@ protected:
     EventRegistrationToken m_optionsZoomToken = {};
     EventRegistrationToken m_lostOptionsFocus = {}; // Token for the lost focus handler in options WebView
 
+    std::map<int, BOOL> m_showbar_tabs;
+
 protected:
     HRESULT InitUIWebViews(int tabid);
     HRESULT CreateBrowserControlsWebView(int tabid);
@@ -103,10 +105,7 @@ protected:
 public:
     WebView(HWND hWnd);
     ~WebView();
-
-    void callbak_store_ctrlwebview(int tabid, wil::com_ptr<ICoreWebView2Controller> webvctrl);
-    void callbak_store_optswebview(int tabid, wil::com_ptr<ICoreWebView2Controller> webvaddbar);
-    void create_webview(int tabid, LPCWSTR url);
+    void create_webview(int tabid, LPCWSTR url, BOOL showbar = true);
 
     static std::wstring GetAppDataDirectory();
     std::wstring GetFullPathFor(LPCWSTR relativePath);

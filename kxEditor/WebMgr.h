@@ -10,7 +10,7 @@ public:
     WebMgr(HWND hwnd, WebView* webeditr, int tabid);
     ~WebMgr();
 
-    void create_webview(int tabid, LPCWSTR url);
+    void create_webview(int tabid, LPCWSTR url, BOOL showbar = true);
     void resize_webview();
 
 private:
