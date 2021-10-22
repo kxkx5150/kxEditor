@@ -29,6 +29,7 @@ Tab* Tabs::create_tab()
 }
 void Tabs::select_tab(int tabno)
 {
+    m_active_tab_no = tabno;
     m_active_tab = m_tabs[tabno];
 }
 void Tabs::close_all_tabs()

@@ -43,7 +43,7 @@ NodeMgr::NodeMgr(ContMgr* contmgr, CmdMgr* cmdmgr)
 NodeMgr::~NodeMgr()
 {
     beast_ws_close();
-    terminate_node();
+    //terminate_node();
 }
 DWORD RunSilent(TCHAR* strFunct, TCHAR* strstrParams)
 {

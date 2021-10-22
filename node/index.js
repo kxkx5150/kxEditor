@@ -1,4 +1,5 @@
 "use strct";
+let killtimerid = 0;
 let cols = 90;
 let rows = 30;
 let fontSize = 16;
@@ -107,11 +108,18 @@ const sendAll = (msg) => {
     });
   }
 }
+const killNodejs = ()=>{
+  process.exit(1);
+}
+process.on('exit',  (code)=> {
+  console.log('Program exit. code = ', code);
+});
 wss.on('connection', function connection(ws, req) {
-  // if ("127.0.0.1" !== req.socket.remoteAddress)
-  //   return;
+  if ("127.0.0.1" !== req.socket.remoteAddress)
+    return;
   console.log("WebSocket connection");
 
+  clearTimeout(killtimerid);
   ws.on('message', function incoming(message) {
     const obj = JSON.parse(message);
     let cb = (json) => {
@@ -121,6 +129,10 @@ wss.on('connection', function connection(ws, req) {
   });
   ws.on('close', function () {
     console.log('Client disconnected');
+    clearTimeout(killtimerid);
+    killtimerid = setTimeout(()=>{
+      killNodejs();
+    },1000);
   });
   ws.on('error', function (err) {
     console.log('Error: ' + err.code);
