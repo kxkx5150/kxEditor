@@ -69,7 +69,3 @@
 #define TextView_OpenFile(szFile) \
     SendMessage(g_hwndTextView, TXM_OPENFILE, 0, (LPARAM)(TCHAR*)(szFile))
 
-BOOL InitTextView();
-BOOL InitWebView();
-HWND CreateTextView(HWND hwndParent);
-HWND CreateWebView(HWND hwndParent);

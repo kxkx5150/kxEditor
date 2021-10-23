@@ -8,6 +8,12 @@
 #include <tchar.h>
 #include "kxEditor_define.h"
 
+
+BOOL InitTextView();
+BOOL InitWebView();
+HWND CreateTextView(HWND hwndParent);
+HWND CreateWebView(HWND hwndParent);
+
 class Tabs;
 class DocMgr;
 class NodeMgr;

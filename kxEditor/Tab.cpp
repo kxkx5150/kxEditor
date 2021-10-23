@@ -22,7 +22,7 @@ LONG Tab::init_file()
     close_document();
     m_Document = new LinkedList();
     m_docmgr = new DocMgr(m_Document, m_txteditr, m_editview, m_txthWnd);
-    m_webmgr = new WebMgr(m_webhwnd,m_webeditr, m_tabid);
+    m_webmgr = new WebMgr(m_webhwnd, m_webeditr, m_tabid);
     return TRUE;
 }
 void Tab::close_document()
@@ -48,10 +48,15 @@ LONG Tab::OpenFile(TCHAR* szFileName)
 }
 LONG Tab::create()
 {
-    if (m_is_txt) {
+    if (m_mode == Mode::TEXT) {
         create_file();
-    } else {
+
+    } else if (m_mode == Mode::TERMINAL) {
         change_webview();
+
+    } else if (m_mode == Mode::WEBVIEW) {
+        change_webview();
+
     }
     return 0;
 }
@@ -74,32 +79,32 @@ LONG Tab::create_file(TCHAR* szFileName)
 }
 void Tab::change_webview()
 {
-    m_is_txt = false;
+    m_mode = Mode::WEBVIEW;
     change_view();
     m_webmgr->create_webview(m_tabid, L"https://www.google.com/");
 }
 void Tab::change_cmdview()
 {
-    m_is_txt = false;
+    m_mode = Mode::TERMINAL;
     change_view();
     m_webmgr->create_webview(m_tabid, L"http://localhost:8890", false);
 }
 void Tab::change_txtview()
 {
-    m_is_txt = true;
+    m_mode = Mode::TEXT;
     change_view();
 }
 void Tab::change_view()
 {
     HDWP hdwp = BeginDeferWindowPos(2);
-    if (m_is_txt) {
+    if (m_mode == Mode::TEXT) {
         DeferWindowPos(hdwp, m_webhwnd, 0, 0, 0, 0, 0, SWP_SHOWWINDOW);
         MoveWindow(m_webhwnd, 0, 0, 0, 0, TRUE);
 
         DeferWindowPos(hdwp, m_txthWnd, 0, 0, 0, m_width, m_height, SWP_SHOWWINDOW);
         MoveWindow(m_txthWnd, 0, 0, m_width, m_height, TRUE);
 
-    } else {
+    } else if (m_mode == Mode::TERMINAL || m_mode == Mode::WEBVIEW) {
         DeferWindowPos(hdwp, m_txthWnd, 0, 0, 0, 0, 0, SWP_SHOWWINDOW);
         MoveWindow(m_txthWnd, 0, 0, 0, 0, TRUE);
 
@@ -114,10 +119,10 @@ void Tab::resize_view(HDWP hdwp, int width, int height, int x, int y)
     m_x = x;
     m_y = y;
 
-    if (m_is_txt) {
+    if (m_mode == Mode::TEXT) {
         DeferWindowPos(hdwp, m_txthWnd, 0, 0, 0, width, height, SWP_SHOWWINDOW);
         MoveWindow(m_txthWnd, 0, 0, width, height, TRUE);
-    } else {
+    } else if (m_mode == Mode::TERMINAL || m_mode == Mode::WEBVIEW) {
         DeferWindowPos(hdwp, m_webhwnd, 0, 0, 0, width, height, SWP_SHOWWINDOW);
         MoveWindow(m_webhwnd, 0, 0, width, height, TRUE);
     }

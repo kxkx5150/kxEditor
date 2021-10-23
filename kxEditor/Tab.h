@@ -10,6 +10,12 @@ class DocMgr;
 class WebView;
 class WebMgr;
 
+enum class Mode {
+    TEXT,
+    TERMINAL,
+    WEBVIEW
+};
+
 class Tab {
     HWND m_hwnd;
     HWND m_txthWnd;
@@ -23,7 +29,7 @@ public:
     WebView* m_webeditr = nullptr;
     WebMgr* m_webmgr = nullptr;
 
-    BOOL m_is_txt = true;
+    Mode m_mode = Mode::TEXT;
 
 private:
     int m_tabid = 0;
