@@ -54,6 +54,7 @@ public:
     void change_cmdview();
     void change_txtview();
     void change_view();
+    void resize_textview();
     void resize_webview();
 
 };

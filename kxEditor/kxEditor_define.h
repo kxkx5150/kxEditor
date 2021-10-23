@@ -69,3 +69,5 @@
 #define TextView_OpenFile(szFile) \
     SendMessage(g_hwndTextView, TXM_OPENFILE, 0, (LPARAM)(TCHAR*)(szFile))
 
+#define IDC_TAB 8990
+#define IDD_TABCONTROLDIALOG 139

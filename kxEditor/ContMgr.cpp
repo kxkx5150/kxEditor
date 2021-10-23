@@ -1,5 +1,6 @@
 #include "ContMgr.h"
 #include "TextEditor.h"
+#include <CommCtrl.h>
 
 ContMgr::ContMgr()
 {
@@ -33,43 +34,10 @@ void ContMgr::set_focus_container(int idx)
 {
     m_containers[idx].txteditor->set_focus();
 }
-void ContMgr::set_resize_containers(HDWP hdwp, int width, int height)
-{
-    int contsize = m_containers.size();
-    int contwidth = width / contsize;
-    int xpos = 0;
-
-    for (int i = 0; i < contsize; i++) {
-        m_containers[i].tabs->m_active_tab->resize_view(hdwp, contwidth, height, xpos, 0);
-        xpos += contwidth;
-    }
-}
 
 void ContMgr::open_file_container(int idx, TCHAR* szFileName)
 {
     m_containers[idx].txteditor->OpenFile(szFileName);
-}
-LONG ContMgr::send_msg_container(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-    if (m_containers.size() > 0) {
-        for (int i = 0; i < m_containers.size(); i++) {
-            if (hwnd == m_containers[i].wndhwnd) {
-                return m_containers[i].txteditor->WndProc(hwnd, msg, wParam, lParam);
-            }
-        }
-    }
-    return 0;
-}
-void ContMgr::send_resize_msg_webview(HWND hwnd)
-{
-    if (m_containers.size() > 0) {
-        for (int i = 0; i < m_containers.size(); i++) {
-            if (hwnd == m_containers[i].webvhwnd) {
-                if (m_containers[i].tabs->m_active_tab->m_webmgr)
-                    m_containers[i].tabs->m_active_tab->resize_webview();
-            }
-        }
-    }
 }
 void ContMgr::change_webview()
 {
@@ -79,9 +47,53 @@ void ContMgr::change_cmdview()
 {
     m_containers[m_active_cont_no].tabs->m_active_tab->change_cmdview();
 }
-
-
 void ContMgr::change_txtview()
 {
     m_containers[m_active_cont_no].tabs->m_active_tab->change_txtview();
+}
+LONG ContMgr::send_msg_container(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    if (m_containers.size() > 0) {
+        for (int i = 0; i < m_containers.size(); i++) {
+            if (hwnd == m_containers[i].txthwnd) {
+                return m_containers[i].txteditor->WndProc(hwnd, msg, wParam, lParam);
+            }
+        }
+    }
+    return 0;
+}
+void ContMgr::send_resize_msg_containers(HDWP hdwp, int width, int height, int x, int y)
+{
+    int contsize = m_containers.size();
+    if (contsize < 1)
+        return;
+    int contwidth = width / contsize;
+
+    for (int i = 0; i < contsize; i++) {
+        RECT rc;
+        GetClientRect(m_containers[i].prnthwnd, &rc);
+        TabCtrl_AdjustRect(m_containers[i].tabhwnd, FALSE, &rc);
+        m_containers[i].tabs->m_active_tab->resize_view(hdwp, contwidth, height - rc.top, x, rc.top + y);
+        x += contwidth;
+    }
+}
+void ContMgr::send_resize_msg_textview(HWND hwnd)
+{
+    if (m_containers.size() > 0) {
+        for (int i = 0; i < m_containers.size(); i++) {
+            if (hwnd == m_containers[i].txthwnd) {
+                m_containers[i].tabs->m_active_tab->resize_textview();
+            }
+        }
+    }
+}
+void ContMgr::send_resize_msg_webview(HWND hwnd)
+{
+    if (m_containers.size() > 0) {
+        for (int i = 0; i < m_containers.size(); i++) {
+            if (hwnd == m_containers[i].webvhwnd) {
+                m_containers[i].tabs->m_active_tab->resize_webview();
+            }
+        }
+    }
 }

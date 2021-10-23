@@ -20,8 +20,9 @@ extern NodeMgr* m_nodemgr = nullptr;
 ContMgr* m_contmgr = nullptr;
 CmdMgr* m_cmdmgr = nullptr;
 
-BOOL g_fShowStatusbar = true;
 extern BOOL g_fShowScrollH = false;
+BOOL g_fShowStatusbar = true;
+BOOL g_fShowTabControl = true;
 
 WCHAR szTitle[MAX_LOADSTRING];
 WCHAR szWindowClass[MAX_LOADSTRING];

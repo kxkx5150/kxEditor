@@ -108,6 +108,35 @@ HWND CreateWebView(HWND hwndParent)
         0,
         0);
 }
+int InsertTabItem(HWND hTab, LPTSTR pszText, int iid)
+{
+    TCITEM ti = { 0 };
+    ti.mask = TCIF_TEXT;
+    ti.pszText = pszText;
+    ti.cchTextMax = wcslen(pszText);
+    return (int)SendMessage(hTab, TCM_INSERTITEM, iid, (LPARAM)&ti);
+}
+HWND CreateTabControl(HWND hWnd)
+{
+    INITCOMMONCONTROLSEX iccx;
+    iccx.dwSize = sizeof(INITCOMMONCONTROLSEX);
+    iccx.dwICC = ICC_TAB_CLASSES;
+    if (!InitCommonControlsEx(&iccx))
+        return FALSE;
+
+    RECT rc;
+    GetClientRect(hWnd, &rc);
+    HWND hTab = CreateWindowEx(0, WC_TABCONTROL, 0,
+        TCS_FIXEDWIDTH | WS_CHILD | WS_VISIBLE | TCS_FLATBUTTONS,
+        rc.left, rc.top, rc.right, rc.bottom,
+        hWnd, (HMENU)IDC_TAB, hInst, 0);
+
+    SendMessage(hTab, WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT), 0);
+    SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)hTab);
+
+    InsertTabItem(hTab, (LPTSTR)L"First Page", 0);
+    return hTab;
+}
 void SetWindowFileName(HWND hwnd, TCHAR* szFileName, BOOL fModified)
 {
     TCHAR ach[MAX_PATH + 4];
@@ -214,7 +243,7 @@ void SetWindSize(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         height -= heightsb;
     }
 
-    m_contmgr->set_resize_containers(hdwp, width, height);
+    m_contmgr->send_resize_msg_containers(hdwp, width, height, 0, 0);
     EndDeferWindowPos(hdwp);
 }
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -304,11 +333,16 @@ LRESULT WINAPI TextViewWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
         return TRUE;
 
     case WM_NCDESTROY:
-        return 0;
-
+        break;
+    case WM_SIZE: {
+        m_contmgr->send_resize_msg_textview(hwnd);
+        break;
+    }
     default:
         return m_contmgr->send_msg_container(hwnd, msg, wParam, lParam);
     }
+
+    return 0;
 }
 LRESULT CALLBACK WebViewWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {

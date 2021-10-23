@@ -13,6 +13,7 @@ BOOL InitTextView();
 BOOL InitWebView();
 HWND CreateTextView(HWND hwndParent);
 HWND CreateWebView(HWND hwndParent);
+HWND CreateTabControl(HWND hWnd);
 
 class Tabs;
 class DocMgr;
@@ -22,12 +23,14 @@ class ContMgr;
 class WebView;
 
 struct EditorContainer {
+    HWND prnthwnd;
+    HWND tabhwnd;
+    HWND txthwnd;
+    HWND webvhwnd;
     TextEditor* txteditor;
     EditView* editview;
     WebView* webview;
     Tabs* tabs;
-    HWND wndhwnd;
-    HWND webvhwnd;
 };
 struct FONT {
     HFONT hFont;
@@ -63,8 +66,8 @@ private:
     WebView* m_webview = nullptr;
 
     HWND m_hWnd_txtedit;
-    HWND m_hwndwebview;
-
+    HWND m_hwnd_webview;
+    HWND m_hwnd_tabctrl;
 
 private:
     // font

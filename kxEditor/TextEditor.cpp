@@ -9,7 +9,6 @@ TextEditor::TextEditor(HWND hwnd, CmdMgr* cmdmgr)
     LoadRegSettings();
     ApplyRegSettings();
     OnSetFont();
-
 }
 TextEditor::~TextEditor()
 {
@@ -17,23 +16,26 @@ TextEditor::~TextEditor()
 }
 EditorContainer TextEditor::create_editor_container()
 {
-    m_tabs = new Tabs();
-    m_hWnd_txtedit = CreateTextView(m_hWnd);
-    m_hwndwebview = CreateWebView(m_hWnd);
-    m_editview = new EditView(m_hWnd_txtedit, this, m_tabs);
-    m_cmdmgr->set_hwnd(m_hWnd_txtedit);
-    m_webview = new WebView(m_hwndwebview);
+    m_hwnd_tabctrl = CreateTabControl(m_hWnd);
+    m_hWnd_txtedit = CreateTextView(m_hwnd_tabctrl);
+    m_hwnd_webview = CreateWebView(m_hwnd_tabctrl);
 
-    m_tabs->init_tabs(m_hWnd,this, m_hWnd_txtedit, m_editview, m_hwndwebview, m_webview);
+    m_tabs = new Tabs();
+    m_editview = new EditView(m_hWnd_txtedit, this, m_tabs);
+    m_webview = new WebView(m_hwnd_webview);
+    
+    m_cmdmgr->set_hwnd(m_hWnd_txtedit);
+    m_tabs->init_tabs(m_hWnd, this, m_hWnd_txtedit, m_editview, m_hwnd_webview, m_webview);
 
     EditorContainer econt;
-    econt.wndhwnd = m_hWnd_txtedit;
+    econt.prnthwnd = m_hWnd;
+    econt.tabhwnd = m_hwnd_tabctrl;
+    econt.txthwnd = m_hWnd_txtedit;
+    econt.webvhwnd = m_hwnd_webview;
     econt.txteditor = this;
     econt.editview = m_editview;
-    econt.webvhwnd = m_hwndwebview;
     econt.webview = m_webview;
     econt.tabs = m_tabs;
-
     return econt;
 }
 LONG TextEditor::OpenFile(TCHAR* szFileName)
@@ -108,15 +110,14 @@ LONG WINAPI TextEditor::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
     case WM_TIMER:
         return OnTimer(wParam);
 
-    //case WM_PASTE:
-    //    return OnPaste();
+        //case WM_PASTE:
+        //    return OnPaste();
 
     case WM_CHAR:
         return m_cmdmgr->OnChar(wParam, lParam);
 
     case WM_KEYDOWN:
         return m_cmdmgr->parser(wParam, lParam);
-
     }
 
     return DefWindowProc(hwnd, msg, wParam, lParam);
