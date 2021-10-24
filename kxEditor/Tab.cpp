@@ -3,7 +3,7 @@
 #include "WebView.h"
 #include <CommCtrl.h>
 
-Tab::Tab(HWND hWnd, HWND tabhWnd, HWND txthwnd, TextEditor* txtee, EditView* editview, HWND whWnd, WebView* webview, int tabid)
+Tab::Tab(TCHAR* szFileName,HWND hWnd, HWND tabhWnd, HWND txthwnd, TextEditor* txtee, EditView* editview, HWND whWnd, WebView* webview, int tabid)
 {
     m_tabid = tabid;
     m_hwnd = hWnd;
@@ -13,16 +13,16 @@ Tab::Tab(HWND hWnd, HWND tabhWnd, HWND txthwnd, TextEditor* txtee, EditView* edi
     m_editview = editview;
     m_webhwnd = whWnd;
     m_webeditr = webview;
-    create();
+    create(szFileName);
 }
 Tab::~Tab()
 {
     close_document();
 }
-LONG Tab::create()
+LONG Tab::create(TCHAR* szFileName)
 {
     if (m_mode == Mode::TEXT) {
-        create_file();
+        create_file(szFileName);
 
     } else if (m_mode == Mode::TERMINAL) {
         change_webview();
@@ -32,6 +32,23 @@ LONG Tab::create()
     }
     return 0;
 }
+LONG Tab::create_file(TCHAR* szFileName)
+{
+    init_file(szFileName);
+    if (szFileName) {
+        if (m_Document->open_file(szFileName, m_txteditr->m_tabwidth)) {
+        } else {
+            create_emptyfile();
+        }
+    } else {
+        create_emptyfile();
+    }
+
+    m_txteditr->UpdateMetrics();
+    m_txteditr->UpdateMarginWidth();
+    m_docmgr->set_caret(0, 0);
+    return TRUE;
+}
 LONG Tab::init_file(TCHAR* szFileName)
 {
     close_document();
@@ -39,7 +56,7 @@ LONG Tab::init_file(TCHAR* szFileName)
     m_docmgr = new DocMgr(m_Document, m_txteditr, m_editview, m_txthWnd);
     m_webmgr = new WebMgr(m_webhwnd, m_webeditr, m_tabid);
 
-    if (szFileName) {
+    if (szFileName && szFileName != L"") {
         create_tab_control(szFileName);
     } else {
         create_tab_control((TCHAR*)L"Untitled");
@@ -58,23 +75,6 @@ void Tab::close_document()
         delete m_Document;
         m_Document = nullptr;
     }
-}
-LONG Tab::create_file(TCHAR* szFileName)
-{
-    init_file(szFileName);
-    if (szFileName) {
-        if (m_Document->open_file(szFileName, m_txteditr->m_tabwidth)) {
-        } else {
-            create_emptyfile();
-        }
-    } else {
-        create_emptyfile();
-    }
-
-    m_txteditr->UpdateMetrics();
-    m_txteditr->UpdateMarginWidth();
-    m_docmgr->set_caret(0, 0);
-    return TRUE;
 }
 LONG Tab::create_emptyfile()
 {

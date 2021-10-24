@@ -41,10 +41,10 @@ private:
     int m_y = 0;
 
 public:
-    Tab(HWND hWnd, HWND tabhWnd, HWND txthwnd, TextEditor* txtee, EditView* editview, HWND whWnd, WebView* webview, int tabid);
+    Tab(TCHAR* szFileName,HWND hWnd, HWND tabhWnd, HWND txthwnd, TextEditor* txtee, EditView* editview, HWND whWnd, WebView* webview, int tabid);
     ~Tab();
 
-    LONG create();
+    LONG create(TCHAR* szFileName);
     void create_tab_control(TCHAR* szFileName);
     LONG create_file(TCHAR* szFileName = nullptr);
     LONG init_file(TCHAR* szFileName);

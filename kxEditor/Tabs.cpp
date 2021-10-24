@@ -24,7 +24,7 @@ void Tabs::init_tabs(HWND hWnd, HWND tabhWnd, TextEditor* txteditr, HWND txthWnd
 LONG Tabs::create_tab(TCHAR* szFileName)
 {
     m_tabid++;
-    auto tab = new Tab(m_hwnd, m_tabhWnd, m_txthWnd, m_txteditr, m_editview, m_webhwnd, m_webeditr, m_tabid);
+    auto tab = new Tab(szFileName, m_hwnd, m_tabhWnd, m_txthWnd, m_txteditr, m_editview, m_webhwnd, m_webeditr, m_tabid);
     m_tabs.push_back(tab);
     select_tab(m_tabid);
     return m_tabid;
