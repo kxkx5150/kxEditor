@@ -14,19 +14,20 @@ void Tabs::init_tabs(HWND hWnd, HWND tabhWnd, TextEditor* txteditr, HWND txthWnd
 {
     m_hwnd = hWnd;
     m_tabhWnd = tabhWnd;
+    m_txthWnd = txthWnd;
+    m_webhwnd = whWnd;
     m_txteditr = txteditr;
     m_editview = editview;
     m_webeditr = webview;
-
-    m_txthWnd = txthWnd;
-    m_webhwnd = whWnd;
-    m_tabs.push_back(create_tab());
-    select_tab(0);
+    create_tab();
 }
-Tab* Tabs::create_tab()
+LONG Tabs::create_tab(TCHAR* szFileName)
 {
     m_tabid++;
-    return new Tab(m_hwnd, m_tabhWnd, m_txthWnd, m_txteditr, m_editview, m_webhwnd, m_webeditr, m_tabid);
+    auto tab = new Tab(m_hwnd, m_tabhWnd, m_txthWnd, m_txteditr, m_editview, m_webhwnd, m_webeditr, m_tabid);
+    m_tabs.push_back(tab);
+    select_tab(m_tabid);
+    return m_tabid;
 }
 void Tabs::select_tab(int tabno)
 {

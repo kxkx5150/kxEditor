@@ -2,7 +2,6 @@
 #include "WebMgr.h"
 #include "WebView.h"
 #include <CommCtrl.h>
-#pragma comment(lib, "comctl32.lib")
 
 Tab::Tab(HWND hWnd, HWND tabhWnd, HWND txthwnd, TextEditor* txtee, EditView* editview, HWND whWnd, WebView* webview, int tabid)
 {
@@ -19,6 +18,19 @@ Tab::Tab(HWND hWnd, HWND tabhWnd, HWND txthwnd, TextEditor* txtee, EditView* edi
 Tab::~Tab()
 {
     close_document();
+}
+LONG Tab::create()
+{
+    if (m_mode == Mode::TEXT) {
+        create_file();
+
+    } else if (m_mode == Mode::TERMINAL) {
+        change_webview();
+
+    } else if (m_mode == Mode::WEBVIEW) {
+        change_webview();
+    }
+    return 0;
 }
 LONG Tab::init_file(TCHAR* szFileName)
 {
@@ -46,19 +58,6 @@ void Tab::close_document()
         delete m_Document;
         m_Document = nullptr;
     }
-}
-LONG Tab::create()
-{
-    if (m_mode == Mode::TEXT) {
-        create_file();
-
-    } else if (m_mode == Mode::TERMINAL) {
-        change_webview();
-
-    } else if (m_mode == Mode::WEBVIEW) {
-        change_webview();
-    }
-    return 0;
 }
 LONG Tab::create_file(TCHAR* szFileName)
 {

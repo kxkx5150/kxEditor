@@ -42,7 +42,7 @@ LONG TextEditor::OpenFile(TCHAR* szFileName)
 {
     m_tabs->m_active_tab->m_docmgr->m_nVScrollPos = 0;
     m_tabs->m_active_tab->m_docmgr->m_nHScrollPos = 0;
-    return m_tabs->m_active_tab->create_file(szFileName);
+    return m_tabs->create_tab(szFileName);
 }
 long long TextEditor::GetLineCount()
 {
