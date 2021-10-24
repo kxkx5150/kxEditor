@@ -3,7 +3,6 @@
 
 WebMgr::WebMgr(HWND hwnd, WebView* webeditr, int tabid)
 {
-    _RPTN(_CRT_WARN, "tabid :%d\n", tabid);
     m_hwnd = hwnd;
     m_webeditr = webeditr;
     m_tabid = tabid;

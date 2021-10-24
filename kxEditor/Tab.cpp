@@ -1,11 +1,14 @@
 ﻿#include "Tab.h"
 #include "WebMgr.h"
 #include "WebView.h"
+#include <CommCtrl.h>
+#pragma comment(lib, "comctl32.lib")
 
-Tab::Tab(HWND hWnd, HWND txthwnd, TextEditor* txtee, EditView* editview, HWND whWnd, WebView* webview, int tabid)
+Tab::Tab(HWND hWnd, HWND tabhWnd, HWND txthwnd, TextEditor* txtee, EditView* editview, HWND whWnd, WebView* webview, int tabid)
 {
     m_tabid = tabid;
     m_hwnd = hWnd;
+    m_tabhWnd = tabhWnd;
     m_txthWnd = txthwnd;
     m_txteditr = txtee;
     m_editview = editview;
@@ -17,12 +20,19 @@ Tab::~Tab()
 {
     close_document();
 }
-LONG Tab::init_file()
+LONG Tab::init_file(TCHAR* szFileName)
 {
     close_document();
     m_Document = new LinkedList();
     m_docmgr = new DocMgr(m_Document, m_txteditr, m_editview, m_txthWnd);
     m_webmgr = new WebMgr(m_webhwnd, m_webeditr, m_tabid);
+
+    if (szFileName) {
+        create_tab_control(szFileName);
+    } else {
+        create_tab_control((TCHAR*)L"Untitled");
+    }
+
     return TRUE;
 }
 void Tab::close_document()
@@ -36,15 +46,6 @@ void Tab::close_document()
         delete m_Document;
         m_Document = nullptr;
     }
-}
-LONG Tab::create_emptyfile()
-{
-    m_Document->create_empty();
-    return TRUE;
-}
-LONG Tab::OpenFile(TCHAR* szFileName)
-{
-    return create_file(szFileName);
 }
 LONG Tab::create()
 {
@@ -61,7 +62,7 @@ LONG Tab::create()
 }
 LONG Tab::create_file(TCHAR* szFileName)
 {
-    init_file();
+    init_file(szFileName);
     if (szFileName) {
         if (m_Document->open_file(szFileName, m_txteditr->m_tabwidth)) {
         } else {
@@ -75,6 +76,19 @@ LONG Tab::create_file(TCHAR* szFileName)
     m_txteditr->UpdateMarginWidth();
     m_docmgr->set_caret(0, 0);
     return TRUE;
+}
+LONG Tab::create_emptyfile()
+{
+    m_Document->create_empty();
+    return TRUE;
+}
+void Tab::create_tab_control(TCHAR* szFileName)
+{
+    TCITEM ti = { 0 };
+    ti.mask = TCIF_TEXT;
+    ti.pszText = szFileName;
+    ti.cchTextMax = wcslen(szFileName);
+    SendMessage(m_tabhWnd, TCM_INSERTITEM, m_tabid, (LPARAM)&ti);
 }
 void Tab::change_webview()
 {
@@ -122,7 +136,6 @@ void Tab::resize_view(HDWP hdwp, int width, int height, int x, int y)
 }
 void Tab::resize_textview()
 {
-
 }
 void Tab::resize_webview()
 {

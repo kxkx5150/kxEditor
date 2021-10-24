@@ -1,12 +1,11 @@
 ﻿#include "kxEditor.h"
 #include "kxEditor_define.h"
-#pragma comment(lib, "uxtheme.lib")
-#pragma comment(lib, "comctl32.lib")
 #include <Commdlg.h>
 #include <Shlwapi.h>
 #include <Windows.h>
 #include <iostream>
-
+#pragma comment(lib, "uxtheme.lib")
+#pragma comment(lib, "comctl32.lib")
 #pragma comment(lib, "Shlwapi.lib")
 
 ATOM InitMainView(HINSTANCE hInstance)
@@ -108,14 +107,6 @@ HWND CreateWebView(HWND hwndParent)
         0,
         0);
 }
-int InsertTabItem(HWND hTab, LPTSTR pszText, int iid)
-{
-    TCITEM ti = { 0 };
-    ti.mask = TCIF_TEXT;
-    ti.pszText = pszText;
-    ti.cchTextMax = wcslen(pszText);
-    return (int)SendMessage(hTab, TCM_INSERTITEM, iid, (LPARAM)&ti);
-}
 HWND CreateTabControl(HWND hWnd)
 {
     INITCOMMONCONTROLSEX iccx;
@@ -133,8 +124,6 @@ HWND CreateTabControl(HWND hWnd)
 
     SendMessage(hTab, WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT), 0);
     SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)hTab);
-
-    InsertTabItem(hTab, (LPTSTR)L"First Page", 0);
     return hTab;
 }
 void SetWindowFileName(HWND hwnd, TCHAR* szFileName, BOOL fModified)
@@ -258,8 +247,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         g_hwndStatusbar = CreateStatusBar(hWnd);
         m_contmgr = new ContMgr();
         m_cmdmgr = new CmdMgr(m_contmgr);
-        m_nodemgr = new NodeMgr(m_contmgr, m_cmdmgr);
         m_contmgr->create_editor_container(hWnd, m_cmdmgr);
+        m_nodemgr = new NodeMgr(m_contmgr, m_cmdmgr);
         break;
     }
     case WM_DESTROY: {

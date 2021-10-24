@@ -18,6 +18,7 @@ enum class Mode {
 
 class Tab {
     HWND m_hwnd;
+    HWND m_tabhWnd;
     HWND m_txthWnd;
     HWND m_webhwnd;
 
@@ -40,14 +41,14 @@ private:
     int m_y = 0;
 
 public:
-    Tab(HWND hWnd, HWND txthwnd, TextEditor* txtee, EditView* editview, HWND whWnd, WebView* webview, int tabid);
+    Tab(HWND hWnd, HWND tabhWnd, HWND txthwnd, TextEditor* txtee, EditView* editview, HWND whWnd, WebView* webview, int tabid);
     ~Tab();
 
     LONG create();
+    void create_tab_control(TCHAR* szFileName);
     LONG create_file(TCHAR* szFileName = nullptr);
-    LONG init_file();
+    LONG init_file(TCHAR* szFileName);
     LONG create_emptyfile();
-    LONG OpenFile(TCHAR* szFileName);
     void close_document();
     void resize_view(HDWP hdwp, int width, int height, int x, int y);
     void change_webview();

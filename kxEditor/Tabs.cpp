@@ -1,7 +1,7 @@
 ﻿#include "Tabs.h"
 #include "EditView.h"
 
-int Tabs::m_tabid = 0;
+int Tabs::m_tabid = -1;
 
 Tabs::Tabs()
 {
@@ -10,9 +10,10 @@ Tabs::~Tabs()
 {
     close_all_tabs();
 }
-void Tabs::init_tabs(HWND hWnd, TextEditor* txteditr, HWND txthWnd, EditView* editview, HWND whWnd, WebView* webview)
+void Tabs::init_tabs(HWND hWnd, HWND tabhWnd, TextEditor* txteditr, HWND txthWnd, EditView* editview, HWND whWnd, WebView* webview)
 {
     m_hwnd = hWnd;
+    m_tabhWnd = tabhWnd;
     m_txteditr = txteditr;
     m_editview = editview;
     m_webeditr = webview;
@@ -25,7 +26,7 @@ void Tabs::init_tabs(HWND hWnd, TextEditor* txteditr, HWND txthWnd, EditView* ed
 Tab* Tabs::create_tab()
 {
     m_tabid++;
-    return new Tab(m_hwnd, m_txthWnd, m_txteditr, m_editview, m_webhwnd, m_webeditr, m_tabid);
+    return new Tab(m_hwnd, m_tabhWnd, m_txthWnd, m_txteditr, m_editview, m_webhwnd, m_webeditr, m_tabid);
 }
 void Tabs::select_tab(int tabno)
 {

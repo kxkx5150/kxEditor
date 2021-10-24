@@ -25,7 +25,7 @@ EditorContainer TextEditor::create_editor_container()
     m_webview = new WebView(m_hwnd_webview);
     
     m_cmdmgr->set_hwnd(m_hWnd_txtedit);
-    m_tabs->init_tabs(m_hWnd, this, m_hWnd_txtedit, m_editview, m_hwnd_webview, m_webview);
+    m_tabs->init_tabs(m_hWnd, m_hwnd_tabctrl, this, m_hWnd_txtedit, m_editview, m_hwnd_webview, m_webview);
 
     EditorContainer econt;
     econt.prnthwnd = m_hWnd;
@@ -42,7 +42,7 @@ LONG TextEditor::OpenFile(TCHAR* szFileName)
 {
     m_tabs->m_active_tab->m_docmgr->m_nVScrollPos = 0;
     m_tabs->m_active_tab->m_docmgr->m_nHScrollPos = 0;
-    return m_tabs->m_active_tab->OpenFile(szFileName);
+    return m_tabs->m_active_tab->create_file(szFileName);
 }
 long long TextEditor::GetLineCount()
 {

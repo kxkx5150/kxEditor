@@ -34,7 +34,6 @@ void ContMgr::set_focus_container(int idx)
 {
     m_containers[idx].txteditor->set_focus();
 }
-
 void ContMgr::open_file_container(int idx, TCHAR* szFileName)
 {
     m_containers[idx].txteditor->OpenFile(szFileName);

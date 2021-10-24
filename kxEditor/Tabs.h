@@ -1,7 +1,7 @@
 ﻿#pragma once
+#include <deque>
 #include "Tab.h"
 #include "TextEditor.h"
-#include <deque>
 
 class EditView;
 class Tab;
@@ -14,6 +14,7 @@ class Tabs {
 private:
     std::deque<Tab*> m_tabs;
     HWND m_hwnd;
+    HWND m_tabhWnd;
     HWND m_txthWnd;
     HWND m_webhwnd;
 
@@ -29,7 +30,7 @@ public:
 public:
     Tabs();
     ~Tabs();
-    void init_tabs(HWND hWnd, TextEditor* txteditr, HWND txthWnd, EditView* editview, HWND whWnd, WebView* webview);
+    void init_tabs(HWND hWnd, HWND tabhWnd, TextEditor* txteditr, HWND txthWnd, EditView* editview, HWND whWnd, WebView* webview);
     Tab* create_tab();
     void select_tab(int tabno);
     void close_all_tabs();
