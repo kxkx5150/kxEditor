@@ -56,7 +56,7 @@ LONG Tab::init_file(TCHAR* szFileName)
     m_docmgr = new DocMgr(m_Document, m_txteditr, m_editview, m_txthWnd);
     m_webmgr = new WebMgr(m_webhwnd, m_webeditr, m_tabid);
 
-    if (szFileName && szFileName != L"") {
+    if (szFileName && wcslen(szFileName) > 0) {
         create_tab_control(szFileName);
     } else {
         create_tab_control((TCHAR*)L"Untitled");
