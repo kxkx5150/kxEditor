@@ -41,4 +41,6 @@ public:
     void resize_view(HDWP hdwp, int width, int height, int x, int y);
     void close_all_tabs();
 
+    void on_select_tab(HWND hwnd);
+
 };

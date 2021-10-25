@@ -235,12 +235,9 @@ void SetWindSize(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     m_contmgr->send_resize_msg_containers(hdwp, width, height, 0, 0);
     EndDeferWindowPos(hdwp);
 }
-void OnSelChange()
+void OnSelChange(HWND hwnd)
 {
-    OutputDebugString(L"aaaaaaaaaaaa\n");
-    //int sel = TabCtrl_GetCurSel(data.tab);
-    //ShowWindow(data.page1, (sel == 0) ? SW_SHOW : SW_HIDE);
-    //ShowWindow(data.page2, (sel == 1) ? SW_SHOW : SW_HIDE);
+    m_contmgr->on_select_tab(hwnd);
 }
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -276,7 +273,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_NOTIFY: {
         switch (((LPNMHDR)lParam)->code) {
         case TCN_SELCHANGE:
-            OnSelChange();
+            OnSelChange(((LPNMHDR)lParam)->hwndFrom);
             break;
         }
     } break;

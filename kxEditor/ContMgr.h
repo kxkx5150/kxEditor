@@ -17,7 +17,6 @@ public:
 private:
     CmdMgr* m_cmdmgr = nullptr;
 
-
 public:
     ContMgr();
     ~ContMgr();
@@ -26,15 +25,17 @@ public:
     void delete_editor_container(int idx);
     void delete_all_editor_container();
     void set_focus_container(int idx);
-    void send_resize_msg_containers(HDWP hdwp, int width, int height, int x, int y);
     void open_file_container(int idx, TCHAR* szFileName);
     LONG send_msg_container(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+    void send_resize_msg_containers(HDWP hdwp, int width, int height, int x, int y);
     void send_resize_msg_textview(HWND hwnd);
     void send_resize_msg_webview(HWND hwnd);
+    void on_select_tab(HWND hwnd);
+
     void change_webview();
     void change_cmdview();
     void change_txtview();
-
 
 private:
 };

@@ -96,3 +96,7 @@ void ContMgr::send_resize_msg_webview(HWND hwnd)
         }
     }
 }
+void ContMgr::on_select_tab(HWND hwnd)
+{
+    m_containers[m_active_cont_no].tabs->on_select_tab(hwnd);
+}

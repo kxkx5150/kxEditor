@@ -533,12 +533,12 @@ int LinkedList::CRLF_size(TCHAR* szText, int nLength)
 }
 int LinkedList::CRLF_size(BYTE* szText, int nLength)
 {
-    BYTE* _szText = (BYTE*)szText;
-
     if (nLength >= 2) {
-        if (_szText[nLength - 2] == '\r' && _szText[nLength - 1] == '\n')
+        if (szText[nLength - 2] == '\r' && szText[nLength - 1] == '\n')
             return 2;
-    } else if (nLength >= 1) {
+    } 
+
+    if (nLength >= 1) {
         if (szText[nLength - 1] == '\r' || szText[nLength - 1] == '\n' || szText[nLength - 1] == '\x0b'
             || szText[nLength - 1] == '\x0c' || szText[nLength - 1] == '\x85' || szText[nLength - 1] == 0x2028 || szText[nLength - 1] == 0x2029)
             return 1;

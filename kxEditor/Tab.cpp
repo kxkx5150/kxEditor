@@ -2,7 +2,8 @@
 #include "WebMgr.h"
 #include "WebView.h"
 
-Tab::Tab(TCHAR* szFileName,HWND hWnd, HWND tabhWnd, HWND txthwnd, TextEditor* txtee, EditView* editview, HWND whWnd, WebView* webview, int tabid)
+Tab::Tab(TCHAR* szFileName, HWND hWnd, HWND tabhWnd, HWND txthwnd,
+    TextEditor* txtee, EditView* editview, HWND whWnd, WebView* webview, int tabid, Mode mode)
 {
     m_tabid = tabid;
     m_hwnd = hWnd;
@@ -12,23 +13,26 @@ Tab::Tab(TCHAR* szFileName,HWND hWnd, HWND tabhWnd, HWND txthwnd, TextEditor* tx
     m_editview = editview;
     m_webhwnd = whWnd;
     m_webeditr = webview;
-    create(szFileName);
+    create(szFileName,mode);
 }
 Tab::~Tab()
 {
     close_document();
 }
-LONG Tab::create(TCHAR* szFileName)
+LONG Tab::create(TCHAR* szFileName, Mode mode)
 {
-    if (m_mode == Mode::TEXT) {
+    if (mode == Mode::TEXT) {
         create_file(szFileName);
 
-    } else if (m_mode == Mode::TERMINAL) {
-        change_webview();
+    } else if (mode == Mode::TERMINAL) {
+        m_mode = Mode::TERMINAL;
+        create_webview();
 
-    } else if (m_mode == Mode::WEBVIEW) {
-        change_webview();
+    } else if (mode == Mode::WEBVIEW) {
+        m_mode = Mode::WEBVIEW;
+        create_webview();
     }
+
     return 0;
 }
 LONG Tab::create_file(TCHAR* szFileName)
@@ -55,6 +59,11 @@ LONG Tab::init_file(TCHAR* szFileName)
     m_docmgr = new DocMgr(m_Document, m_txteditr, m_editview, m_txthWnd);
     m_webmgr = new WebMgr(m_webhwnd, m_webeditr, m_tabid);
     return TRUE;
+}
+void Tab::create_webview() 
+{
+    create_file();
+    change_webview();
 }
 void Tab::close_document()
 {

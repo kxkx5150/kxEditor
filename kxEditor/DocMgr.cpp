@@ -296,7 +296,6 @@ int DocMgr::copy_text(long long lineno, int stridx, int count, int direction, in
 int DocMgr::copy_text_parser(POS stat, POS end, BOOL rm)
 {
     int len = get_text_parser(stat, end, false);
-
     return len;
 }
 int DocMgr::get_text_parser(POS stat, POS end, BOOL rm)

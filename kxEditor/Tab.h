@@ -41,14 +41,18 @@ private:
     int m_y = 0;
 
 public:
-    Tab(TCHAR* szFileName,HWND hWnd, HWND tabhWnd, HWND txthwnd, TextEditor* txtee, EditView* editview, HWND whWnd, WebView* webview, int tabid);
+    Tab(TCHAR* szFileName,HWND hWnd, HWND tabhWnd, HWND txthwnd, 
+        TextEditor* txtee, EditView* editview, HWND whWnd, WebView* webview, int tabid, Mode mode);
     ~Tab();
 
-    LONG create(TCHAR* szFileName);
+    LONG create(TCHAR* szFileName, Mode mode = Mode::TEXT);
     LONG create_file(TCHAR* szFileName = nullptr);
+    void create_webview();
+
     LONG init_file(TCHAR* szFileName);
     LONG create_emptyfile();
     void close_document();
+
     void set_size(int width, int height, int x, int y);
     void resize_view(HDWP hdwp, int width, int height, int x, int y);
     void change_webview();
