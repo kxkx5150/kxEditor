@@ -25,12 +25,11 @@ void Tabs::init_tabs(HWND hWnd, HWND tabhWnd, TextEditor* txteditr, HWND txthWnd
 LONG Tabs::create_tab(TCHAR* szFileName)
 {
     m_tabid++;
-    auto tab = new Tab(szFileName, 
-        m_hwnd, m_tabhWnd, m_txthWnd, 
-        m_txteditr, m_editview, m_webhwnd, m_webeditr, 
+    auto tab = new Tab(szFileName,
+        m_hwnd, m_tabhWnd, m_txthWnd,
+        m_txteditr, m_editview, m_webhwnd, m_webeditr,
         m_tabid,
-        Mode::TEXT
-    );
+        Mode::TEXT);
     m_tabs.push_back(tab);
     select_tab(m_tabid);
 
@@ -61,9 +60,14 @@ void Tabs::select_tab(int tabno)
     m_active_tab = m_tabs[tabno];
     TabCtrl_SetCurSel(m_tabhWnd, tabno);
 
-    m_editview->reset_usp_cache();
-    m_editview->RefreshWindow();
-    m_active_tab->m_docmgr->RepositionCaret();
+    Mode mode = m_active_tab->get_current_mode();
+    if (mode == Mode::TEXT) {
+        m_editview->reset_usp_cache();
+        m_editview->RefreshWindow();
+        m_active_tab->m_docmgr->RepositionCaret();
+    }
+
+    m_active_tab->change_view();
 }
 void Tabs::on_select_tab(HWND hwnd)
 {

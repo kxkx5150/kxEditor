@@ -22,14 +22,15 @@ Tab::~Tab()
 LONG Tab::create(TCHAR* szFileName, Mode mode)
 {
     if (mode == Mode::TEXT) {
+        set_current_mode(Mode::TEXT);
         create_file(szFileName);
 
     } else if (mode == Mode::TERMINAL) {
-        m_mode = Mode::TERMINAL;
+        set_current_mode(Mode::TERMINAL);
         create_webview();
 
     } else if (mode == Mode::WEBVIEW) {
-        m_mode = Mode::WEBVIEW;
+        set_current_mode(Mode::WEBVIEW);
         create_webview();
     }
 
@@ -116,6 +117,14 @@ void Tab::change_view()
         DeferWindowPos(hdwp, m_webhwnd, 0, m_x, m_y, m_width, m_height, SWP_SHOWWINDOW);
         MoveWindow(m_webhwnd, m_x, m_y, m_width, m_height, TRUE);
     }
+}
+Mode Tab::get_current_mode() 
+{
+    return m_mode;
+}
+void Tab::set_current_mode(Mode mode)
+{
+    m_mode = mode;
 }
 void Tab::set_size(int width, int height, int x, int y)
 {

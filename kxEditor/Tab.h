@@ -55,11 +55,16 @@ public:
 
     void set_size(int width, int height, int x, int y);
     void resize_view(HDWP hdwp, int width, int height, int x, int y);
+    void resize_textview();
+    void resize_webview();
+
+    Mode get_current_mode(); 
+    void set_current_mode(Mode mode);
+
     void change_webview();
     void change_cmdview();
     void change_txtview();
     void change_view();
-    void resize_textview();
-    void resize_webview();
+
 
 };

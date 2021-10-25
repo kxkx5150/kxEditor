@@ -63,8 +63,8 @@ struct _BOM_LOOKUP {
 struct node {
     BYTE* data; // Data
     long long datalen;
-    node* prev; // A reference to the previous node
-    node* next; // A reference to the next node
+    node* prev;
+    node* next;
 };
 
 class LinkedList {
@@ -77,8 +77,8 @@ public:
     TCHAR* m_dbuffer;
 
 private:
-    node* front; // points to first node of list
-    node* end; // points to first las of list
+    node* front;
+    node* end;
     node* pointer;
     long long pointer_lineno = -1;
 
