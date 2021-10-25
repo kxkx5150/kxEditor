@@ -32,6 +32,7 @@ public:
     ~Tabs();
     void init_tabs(HWND hWnd, HWND tabhWnd, TextEditor* txteditr, HWND txthWnd, EditView* editview, HWND whWnd, WebView* webview);
     LONG create_tab(TCHAR* szFileName = nullptr);
+    int create_tab_control(TCHAR* szFileName);
     void select_tab(int tabno);
     void close_all_tabs();
 

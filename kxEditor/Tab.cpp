@@ -1,7 +1,6 @@
 ﻿#include "Tab.h"
 #include "WebMgr.h"
 #include "WebView.h"
-#include <CommCtrl.h>
 
 Tab::Tab(TCHAR* szFileName,HWND hWnd, HWND tabhWnd, HWND txthwnd, TextEditor* txtee, EditView* editview, HWND whWnd, WebView* webview, int tabid)
 {
@@ -55,13 +54,6 @@ LONG Tab::init_file(TCHAR* szFileName)
     m_Document = new LinkedList();
     m_docmgr = new DocMgr(m_Document, m_txteditr, m_editview, m_txthWnd);
     m_webmgr = new WebMgr(m_webhwnd, m_webeditr, m_tabid);
-
-    if (szFileName && wcslen(szFileName) > 0) {
-        create_tab_control(szFileName);
-    } else {
-        create_tab_control((TCHAR*)L"Untitled");
-    }
-
     return TRUE;
 }
 void Tab::close_document()
@@ -80,14 +72,6 @@ LONG Tab::create_emptyfile()
 {
     m_Document->create_empty();
     return TRUE;
-}
-void Tab::create_tab_control(TCHAR* szFileName)
-{
-    TCITEM ti = { 0 };
-    ti.mask = TCIF_TEXT;
-    ti.pszText = szFileName;
-    ti.cchTextMax = wcslen(szFileName);
-    SendMessage(m_tabhWnd, TCM_INSERTITEM, m_tabid, (LPARAM)&ti);
 }
 void Tab::change_webview()
 {

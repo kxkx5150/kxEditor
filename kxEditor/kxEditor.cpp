@@ -118,7 +118,7 @@ HWND CreateTabControl(HWND hWnd)
     RECT rc;
     GetClientRect(hWnd, &rc);
     HWND hTab = CreateWindowEx(0, WC_TABCONTROL, 0,
-        TCS_FIXEDWIDTH | WS_CHILD | WS_VISIBLE | TCS_FLATBUTTONS,
+        TCS_FIXEDWIDTH | WS_CHILD | WS_VISIBLE ,
         rc.left, rc.top, rc.right, rc.bottom,
         hWnd, (HMENU)IDC_TAB, hInst, 0);
 
@@ -235,6 +235,13 @@ void SetWindSize(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     m_contmgr->send_resize_msg_containers(hdwp, width, height, 0, 0);
     EndDeferWindowPos(hdwp);
 }
+void OnSelChange()
+{
+    OutputDebugString(L"aaaaaaaaaaaa\n");
+    //int sel = TabCtrl_GetCurSel(data.tab);
+    //ShowWindow(data.page1, (sel == 0) ? SW_SHOW : SW_HIDE);
+    //ShowWindow(data.page2, (sel == 1) ? SW_SHOW : SW_HIDE);
+}
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message) {
@@ -266,6 +273,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         m_contmgr->set_focus_container(m_contmgr->m_active_cont_no);
         break;
     }
+    case WM_NOTIFY: {
+        switch (((LPNMHDR)lParam)->code) {
+        case TCN_SELCHANGE:
+            OnSelChange();
+            break;
+        }
+    } break;
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }

@@ -45,7 +45,6 @@ public:
     ~Tab();
 
     LONG create(TCHAR* szFileName);
-    void create_tab_control(TCHAR* szFileName);
     LONG create_file(TCHAR* szFileName = nullptr);
     LONG init_file(TCHAR* szFileName);
     LONG create_emptyfile();
