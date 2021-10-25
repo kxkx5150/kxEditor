@@ -39,9 +39,8 @@ LONG Tabs::create_tab(TCHAR* szFileName)
     } else {
         tabid = create_tab_control((TCHAR*)L"Untitled");
     }
-
-    select_tab(tabid);
     tab->set_size(m_width, m_height, m_x, m_y);
+    select_tab(tabid);
     return m_tabid;
 }
 int Tabs::create_tab_control(TCHAR* szFileName)
@@ -61,13 +60,13 @@ void Tabs::select_tab(int tabno)
     TabCtrl_SetCurSel(m_tabhWnd, tabno);
 
     Mode mode = m_active_tab->get_current_mode();
+    m_active_tab->change_view();
+
     if (mode == Mode::TEXT) {
         m_editview->reset_usp_cache();
         m_editview->RefreshWindow();
         m_active_tab->m_docmgr->RepositionCaret();
     }
-
-    m_active_tab->change_view();
 }
 void Tabs::on_select_tab(HWND hwnd)
 {
