@@ -49,6 +49,7 @@ public:
     LONG init_file(TCHAR* szFileName);
     LONG create_emptyfile();
     void close_document();
+    void set_size(int width, int height, int x, int y);
     void resize_view(HDWP hdwp, int width, int height, int x, int y);
     void change_webview();
     void change_cmdview();

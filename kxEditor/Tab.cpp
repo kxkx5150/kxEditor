@@ -108,13 +108,16 @@ void Tab::change_view()
         MoveWindow(m_webhwnd, m_x, m_y, m_width, m_height, TRUE);
     }
 }
-void Tab::resize_view(HDWP hdwp, int width, int height, int x, int y)
+void Tab::set_size(int width, int height, int x, int y)
 {
     m_width = width;
     m_height = height;
     m_x = x;
     m_y = y;
-
+}
+void Tab::resize_view(HDWP hdwp, int width, int height, int x, int y)
+{
+    set_size(width, height, x, y);
     change_view();
 }
 void Tab::resize_textview()

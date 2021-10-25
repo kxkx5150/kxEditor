@@ -26,6 +26,10 @@ public:
     Tab* m_active_tab = nullptr;
     int m_active_tab_no = 0;
 
+    int m_width = 0;
+    int m_height = 0;
+    int m_x = 0;
+    int m_y = 0;
 
 public:
     Tabs();
@@ -34,6 +38,7 @@ public:
     LONG create_tab(TCHAR* szFileName = nullptr);
     int create_tab_control(TCHAR* szFileName);
     void select_tab(int tabno);
+    void resize_view(HDWP hdwp, int width, int height, int x, int y);
     void close_all_tabs();
 
 };

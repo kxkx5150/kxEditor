@@ -37,6 +37,7 @@ LONG Tabs::create_tab(TCHAR* szFileName)
     }
 
     select_tab(tabid);
+    tab->set_size(m_width, m_height, m_x, m_y);
     return m_tabid;
 }
 int Tabs::create_tab_control(TCHAR* szFileName)
@@ -53,6 +54,14 @@ void Tabs::select_tab(int tabno)
     m_active_tab_no = tabno;
     m_active_tab = m_tabs[tabno];
     TabCtrl_SetCurSel(m_tabhWnd, tabno);
+}
+void Tabs::resize_view(HDWP hdwp, int width, int height, int x, int y)
+{
+    m_width = width;
+    m_height = height;
+    m_x = x;
+    m_y = y;
+    m_active_tab->resize_view(hdwp, width, height, x, y);
 }
 void Tabs::close_all_tabs()
 {

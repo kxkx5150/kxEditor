@@ -72,7 +72,7 @@ void ContMgr::send_resize_msg_containers(HDWP hdwp, int width, int height, int x
         RECT rc;
         GetClientRect(m_containers[i].prnthwnd, &rc);
         TabCtrl_AdjustRect(m_containers[i].tabhwnd, FALSE, &rc);
-        m_containers[i].tabs->m_active_tab->resize_view(hdwp, contwidth, height - rc.top, x, rc.top + y);
+        m_containers[i].tabs->resize_view(hdwp, contwidth, height - rc.top, x, rc.top + y);
         x += contwidth;
     }
 }
