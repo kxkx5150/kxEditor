@@ -518,35 +518,12 @@ void LinkedList::check_CRLF_mode()
 }
 int LinkedList::CRLF_size(TCHAR* szText, int nLength)
 {
-    if (nLength >= 2) {
-        if (szText[nLength - 2] == '\r' && szText[nLength - 1] == '\n')
-            return 2;
-    }
-
-    if (nLength >= 1) {
-        if (szText[nLength - 1] == '\r' || szText[nLength - 1] == '\n' || szText[nLength - 1] == '\x0b'
-            || szText[nLength - 1] == '\x0c' || szText[nLength - 1] == '\x85' || szText[nLength - 1] == 0x2028 || szText[nLength - 1] == 0x2029)
-            return 1;
-    }
-
-    return 0;
+    return CRLF_size<TCHAR*>(szText, nLength);
 }
 int LinkedList::CRLF_size(BYTE* szText, int nLength)
 {
-    if (nLength >= 2) {
-        if (szText[nLength - 2] == '\r' && szText[nLength - 1] == '\n')
-            return 2;
-    } 
-
-    if (nLength >= 1) {
-        if (szText[nLength - 1] == '\r' || szText[nLength - 1] == '\n' || szText[nLength - 1] == '\x0b'
-            || szText[nLength - 1] == '\x0c' || szText[nLength - 1] == '\x85' || szText[nLength - 1] == 0x2028 || szText[nLength - 1] == 0x2029)
-            return 1;
-    }
-
-    return 0;
+    return CRLF_size<BYTE*>(szText, nLength);
 }
-
 int LinkedList::insert_char(TCHAR* szText, ULONG nLength, node* _node, int u16len, int stridx)
 {
     int _u8len = _node->datalen;

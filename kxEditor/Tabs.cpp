@@ -60,6 +60,7 @@ void Tabs::select_tab(int tabno)
     m_active_tab_no = tabno;
     m_active_tab = m_tabs[tabno];
     TabCtrl_SetCurSel(m_tabhWnd, tabno);
+
     m_editview->reset_usp_cache();
     m_editview->RefreshWindow();
     m_active_tab->m_docmgr->RepositionCaret();

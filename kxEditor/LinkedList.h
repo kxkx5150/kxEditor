@@ -102,6 +102,23 @@ public:
     bool init_linebuffer(BYTE* buf, long long BYTElength);
     void buffer_to_node(BYTE* buf, long long start, long long end, long long ccount, int tabs);
     int detect_file_format(BYTE* buf, long long BYTElen, int* hdr);
+
+    template <typename T>
+    int CRLF_size(T szText, int nLength)
+    {
+        if (nLength >= 2) {
+            if (szText[nLength - 2] == '\r' && szText[nLength - 1] == '\n')
+                return 2;
+        }
+
+        if (nLength >= 1) {
+            if (szText[nLength - 1] == '\r' || szText[nLength - 1] == '\n' || szText[nLength - 1] == '\x0b'
+                || szText[nLength - 1] == '\x0c' || szText[nLength - 1] == '\x85' || szText[nLength - 1] == 0x2028 || szText[nLength - 1] == 0x2029)
+                return 1;
+        }
+
+        return 0;
+    }
     int CRLF_size(TCHAR* szText, int nLength);
     int CRLF_size(BYTE* szText, int nLength);
 
@@ -132,7 +149,7 @@ public:
     int remove_line(node* _node);
     int insert_CRLF(node* _node, int u16len, int stridx);
     int remove_CRLF(node* _nodep, node* _node, int u16lenp, int u16len);
-    
+
     void check_longest_line(BYTE* u8str, int u8len, int u16len);
     int count_tabs(BYTE* buf, long long buflen);
 
