@@ -62,10 +62,13 @@ void Tabs::select_tab(int tabno)
     m_active_tab->change_view();
 
     if (mode == Mode::TEXT) {
+        m_active_tab->resize_view(m_width, m_height, m_x, m_y);
         m_editview->reset_usp_cache();
         m_editview->RefreshWindow();
         m_active_tab->m_docmgr->RepositionCaret();
     } else {
+        //m_active_tab->m_docmgr->hide_caret();
+        m_active_tab->resize_view(m_width, m_height, m_x, m_y);
         hide_webviews();
     }
 }
