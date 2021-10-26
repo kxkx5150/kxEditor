@@ -12,6 +12,9 @@ public:
 
     void create_webview(int tabid, LPCWSTR url, BOOL showbar = true);
     void resize_webview();
+    void select_tab();
+    void unselect_tab();
+
 
 private:
 };

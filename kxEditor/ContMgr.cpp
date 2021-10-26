@@ -41,10 +41,12 @@ void ContMgr::open_file_container(int idx, TCHAR* szFileName)
 void ContMgr::change_webview()
 {
     m_containers[m_active_cont_no].tabs->m_active_tab->change_webview();
+    m_containers[m_active_cont_no].tabs->hide_webviews();
 }
 void ContMgr::change_cmdview()
 {
     m_containers[m_active_cont_no].tabs->m_active_tab->change_cmdview();
+    m_containers[m_active_cont_no].tabs->hide_webviews();
 }
 void ContMgr::change_txtview()
 {

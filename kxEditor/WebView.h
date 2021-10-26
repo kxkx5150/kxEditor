@@ -99,13 +99,13 @@ protected:
     void SetUIMessageBroker(int tabid);
     void UpdateMinWindowSize();
     HRESULT PostJsonToWebView(web::json::value jsonObj, ICoreWebView2* webview);
-    HRESULT SwitchToTab(size_t tabId, int wtabid);
     std::wstring GetFilePathAsURI(std::wstring fullPath);
 
 public:
     WebView(HWND hWnd);
     ~WebView();
     void create_webview(int tabid, LPCWSTR url, BOOL showbar = true);
+    HRESULT SwitchToTab(size_t tabId, int wtabid);
 
     static std::wstring GetAppDataDirectory();
     std::wstring GetFullPathFor(LPCWSTR relativePath);
@@ -118,5 +118,8 @@ public:
     HRESULT HandleTabMessageReceived(int wtabid, size_t tabId, ICoreWebView2* webview, ICoreWebView2WebMessageReceivedEventArgs* eventArgs);
     int GetDPIAwareBound(int bound);
     static void CheckFailure(HRESULT hr, LPCWSTR errorMessage);
+
     HRESULT ResizeUIWebViews(int tabid);
+    HRESULT hide_webview(int tabid);
+
 };

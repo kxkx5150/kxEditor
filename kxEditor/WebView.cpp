@@ -25,7 +25,6 @@ HRESULT WebView::ResizeUIWebViews(int tabid)
             bounds.bottom = 0;
         }
         RETURN_IF_FAILED(m_controlsControllers[tabid]->put_Bounds(bounds));
-
     }
 
     if (m_optionsWebViews[tabid] != nullptr) {
@@ -54,6 +53,35 @@ HRESULT WebView::ResizeUIWebViews(int tabid)
 
     return S_OK;
 }
+HRESULT WebView::hide_webview(int tabid)
+{
+    if (m_controlsWebViews[tabid] != nullptr) {
+        RECT bounds;
+        GetClientRect(m_hWnd, &bounds);
+        bounds.bottom = 0;
+        RETURN_IF_FAILED(m_controlsControllers[tabid]->put_Bounds(bounds));
+    }
+
+    if (m_optionsWebViews[tabid] != nullptr) {
+        RECT bounds;
+        GetClientRect(m_hWnd, &bounds);
+        bounds.top = 0;
+        bounds.bottom = 0;
+        RETURN_IF_FAILED(m_optionsControllers[tabid]->put_Bounds(bounds));
+    }
+
+    if (m_tabsmap[tabid].find(m_activeTabIds[tabid]) != m_tabsmap[tabid].end())
+        m_tabsmap[tabid].at(m_activeTabIds[tabid])->HideWebView();
+
+    HWND wvWindow = GetWindow(m_hWnd, GW_CHILD);
+    while (wvWindow != nullptr) {
+        UpdateWindow(wvWindow);
+        wvWindow = GetWindow(wvWindow, GW_HWNDNEXT);
+    }
+
+    return S_OK;
+}
+
 void WebView::create_webview(int tabid, LPCWSTR url, BOOL showbar)
 {
     m_url = url;

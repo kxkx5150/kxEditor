@@ -54,7 +54,6 @@ int Tabs::create_tab_control(TCHAR* szFileName)
 }
 void Tabs::select_tab(int tabno)
 {
-    _RPTN(_CRT_WARN, "select tabno : %d\n", tabno);
     m_active_tab_no = tabno;
     m_active_tab = m_tabs[tabno];
     TabCtrl_SetCurSel(m_tabhWnd, tabno);
@@ -66,12 +65,24 @@ void Tabs::select_tab(int tabno)
         m_editview->reset_usp_cache();
         m_editview->RefreshWindow();
         m_active_tab->m_docmgr->RepositionCaret();
+    } else {
+        hide_webviews();
     }
 }
 void Tabs::on_select_tab(HWND hwnd)
 {
     int tabno = TabCtrl_GetCurSel(hwnd);
     select_tab(tabno);
+}
+void Tabs::hide_webviews()
+{
+    for (int i = 0; i < m_tabs.size(); i++) {
+        if (m_tabs[i]->m_tabid == m_active_tab_no) {
+            m_tabs[i]->send_select_msg_webview(true);
+        } else {
+            m_tabs[i]->send_select_msg_webview(false);
+        }
+    }
 }
 void Tabs::resize_view(HDWP hdwp, int width, int height, int x, int y)
 {

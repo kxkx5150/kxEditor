@@ -18,3 +18,11 @@ void WebMgr::resize_webview()
 {
     m_webeditr->ResizeUIWebViews(m_tabid);
 }
+void WebMgr::select_tab()
+{
+    m_webeditr->ResizeUIWebViews(m_tabid);
+}
+void WebMgr::unselect_tab()
+{
+    m_webeditr->hide_webview(m_tabid);
+}

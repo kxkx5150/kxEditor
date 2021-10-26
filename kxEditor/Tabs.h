@@ -42,5 +42,6 @@ public:
     void close_all_tabs();
 
     void on_select_tab(HWND hwnd);
+    void hide_webviews();
 
 };

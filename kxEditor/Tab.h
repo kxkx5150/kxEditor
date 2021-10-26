@@ -31,9 +31,9 @@ public:
     WebMgr* m_webmgr = nullptr;
 
     Mode m_mode = Mode::TEXT;
+    int m_tabid = 0;
 
 private:
-    int m_tabid = 0;
 
     int m_width = 0;
     int m_height = 0;
@@ -41,7 +41,7 @@ private:
     int m_y = 0;
 
 public:
-    Tab(TCHAR* szFileName,HWND hWnd, HWND tabhWnd, HWND txthwnd, 
+    Tab(TCHAR* szFileName, HWND hWnd, HWND tabhWnd, HWND txthwnd,
         TextEditor* txtee, EditView* editview, HWND whWnd, WebView* webview, int tabid, Mode mode);
     ~Tab();
 
@@ -53,12 +53,7 @@ public:
     LONG create_emptyfile();
     void close_document();
 
-    void set_size(int width, int height, int x, int y);
-    void resize_view(HDWP hdwp, int width, int height, int x, int y);
-    void resize_textview();
-    void resize_webview();
-
-    Mode get_current_mode(); 
+    Mode get_current_mode();
     void set_current_mode(Mode mode);
 
     void change_webview();
@@ -66,5 +61,11 @@ public:
     void change_txtview();
     void change_view();
 
+    void set_size(int width, int height, int x, int y);
+    void resize_view(HDWP hdwp, int width, int height, int x, int y);
+    void resize_textview();
+    void resize_webview();
+
+    void send_select_msg_webview(BOOL selected);
 
 };

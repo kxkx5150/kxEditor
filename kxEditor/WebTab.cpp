@@ -115,3 +115,12 @@ HRESULT WebTab::ResizeWebView(BOOL showbar)
 
     return m_contentController->put_Bounds(bounds);
 }
+HRESULT WebTab::HideWebView()
+{
+    RECT bounds;
+    GetClientRect(m_parentHWnd, &bounds);
+    WebView* browserWindow = reinterpret_cast<WebView*>(GetWindowLongPtr(m_parentHWnd, GWLP_USERDATA));
+    bounds.top = 0;
+    bounds.bottom = 0;
+    return m_contentController->put_Bounds(bounds);
+}

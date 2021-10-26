@@ -13,7 +13,7 @@ Tab::Tab(TCHAR* szFileName, HWND hWnd, HWND tabhWnd, HWND txthwnd,
     m_editview = editview;
     m_webhwnd = whWnd;
     m_webeditr = webview;
-    create(szFileName,mode);
+    create(szFileName, mode);
 }
 Tab::~Tab()
 {
@@ -61,7 +61,7 @@ LONG Tab::init_file(TCHAR* szFileName)
     m_webmgr = new WebMgr(m_webhwnd, m_webeditr, m_tabid);
     return TRUE;
 }
-void Tab::create_webview() 
+void Tab::create_webview()
 {
     create_file();
     change_webview();
@@ -118,7 +118,7 @@ void Tab::change_view()
         MoveWindow(m_webhwnd, m_x, m_y, m_width, m_height, TRUE);
     }
 }
-Mode Tab::get_current_mode() 
+Mode Tab::get_current_mode()
 {
     return m_mode;
 }
@@ -145,4 +145,12 @@ void Tab::resize_webview()
 {
     if (m_webmgr)
         m_webmgr->resize_webview();
+}
+void Tab::send_select_msg_webview(BOOL selected)
+{
+    if (selected) {
+        m_webmgr->select_tab();
+    } else {
+        m_webmgr->unselect_tab();
+    }
 }
