@@ -130,6 +130,8 @@ void Tab::resize_view(int width, int height, int x, int y)
 {
     set_size(width, height, x, y);
     change_view();
+    if (m_mode != Mode::TEXT)
+        resize_webview();
 }
 void Tab::resize_textview()
 {
