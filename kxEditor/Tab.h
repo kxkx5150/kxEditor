@@ -62,7 +62,7 @@ public:
     void change_view();
 
     void set_size(int width, int height, int x, int y);
-    void resize_view(HDWP hdwp, int width, int height, int x, int y);
+    void resize_view(int width, int height, int x, int y);
     void resize_textview();
     void resize_webview();
 

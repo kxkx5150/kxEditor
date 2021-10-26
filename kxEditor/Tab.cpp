@@ -102,19 +102,12 @@ void Tab::change_txtview()
 }
 void Tab::change_view()
 {
-    HDWP hdwp = BeginDeferWindowPos(2);
     if (m_mode == Mode::TEXT) {
-        DeferWindowPos(hdwp, m_webhwnd, 0, 0, 0, 0, 0, SWP_SHOWWINDOW);
         MoveWindow(m_webhwnd, 0, 0, 0, 0, TRUE);
-
-        DeferWindowPos(hdwp, m_txthWnd, 0, m_x, m_y, m_width, m_height, SWP_SHOWWINDOW);
         MoveWindow(m_txthWnd, m_x, m_y, m_width, m_height, TRUE);
 
     } else if (m_mode == Mode::TERMINAL || m_mode == Mode::WEBVIEW) {
-        DeferWindowPos(hdwp, m_txthWnd, 0, 0, 0, 0, 0, SWP_SHOWWINDOW);
         MoveWindow(m_txthWnd, 0, 0, 0, 0, TRUE);
-
-        DeferWindowPos(hdwp, m_webhwnd, 0, m_x, m_y, m_width, m_height, SWP_SHOWWINDOW);
         MoveWindow(m_webhwnd, m_x, m_y, m_width, m_height, TRUE);
     }
 }
@@ -133,7 +126,7 @@ void Tab::set_size(int width, int height, int x, int y)
     m_x = x;
     m_y = y;
 }
-void Tab::resize_view(HDWP hdwp, int width, int height, int x, int y)
+void Tab::resize_view(int width, int height, int x, int y)
 {
     set_size(width, height, x, y);
     change_view();

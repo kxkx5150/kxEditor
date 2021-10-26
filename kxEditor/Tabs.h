@@ -38,7 +38,7 @@ public:
     LONG create_tab(TCHAR* szFileName = nullptr);
     int create_tab_control(TCHAR* szFileName);
     void select_tab(int tabno);
-    void resize_view(HDWP hdwp, int width, int height, int x, int y);
+    void resize_view(int width, int height, int x, int y);
     void close_all_tabs();
 
     void on_select_tab(HWND hwnd);

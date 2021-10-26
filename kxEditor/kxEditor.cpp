@@ -223,17 +223,17 @@ void SetWindSize(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
     GetWindowRect(g_hwndStatusbar, &rect);
     int heightsb = rect.bottom - rect.top;
-    HDWP hdwp = BeginDeferWindowPos(3);
 
     if (g_fShowStatusbar) {
-        DeferWindowPos(hdwp, g_hwndStatusbar, 0, 0, height - heightsb, width, heightsb, SWP_SHOWWINDOW);
         MoveWindow(g_hwndStatusbar, 0, height - heightsb, width, heightsb, TRUE);
         SetStatusBarParts(g_hwndStatusbar);
         height -= heightsb;
+    } else {
+        MoveWindow(g_hwndStatusbar, 0, height, width, 0, TRUE);
     }
 
-    m_contmgr->send_resize_msg_containers(hdwp, width, height, 0, 0);
-    EndDeferWindowPos(hdwp);
+    ShowWindow(g_hwndStatusbar, SW_SHOW);
+    m_contmgr->send_resize_msg_containers(width, height, 0, 0);
 }
 void OnSelChange(HWND hwnd)
 {

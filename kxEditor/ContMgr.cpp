@@ -63,7 +63,7 @@ LONG ContMgr::send_msg_container(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPar
     }
     return 0;
 }
-void ContMgr::send_resize_msg_containers(HDWP hdwp, int width, int height, int x, int y)
+void ContMgr::send_resize_msg_containers(int width, int height, int x, int y)
 {
     int contsize = m_containers.size();
     if (contsize < 1)
@@ -71,10 +71,7 @@ void ContMgr::send_resize_msg_containers(HDWP hdwp, int width, int height, int x
     int contwidth = width / contsize;
 
     for (int i = 0; i < contsize; i++) {
-        RECT rc;
-        GetClientRect(m_containers[i].prnthwnd, &rc);
-        TabCtrl_AdjustRect(m_containers[i].tabhwnd, FALSE, &rc);
-        m_containers[i].tabs->resize_view(hdwp, contwidth, height - rc.top, x, rc.top + y);
+        m_containers[i].tabs->resize_view(contwidth, height, x,y);
         x += contwidth;
     }
 }

@@ -84,13 +84,18 @@ void Tabs::hide_webviews()
         }
     }
 }
-void Tabs::resize_view(HDWP hdwp, int width, int height, int x, int y)
+void Tabs::resize_view(int width, int height, int x, int y)
 {
+    MoveWindow(m_tabhWnd, x, y, width, height, TRUE);
+    RECT rc;
+    GetClientRect(m_hwnd, &rc);
+    TabCtrl_AdjustRect(m_tabhWnd, FALSE, &rc);
+
     m_width = width;
-    m_height = height;
+    m_height = height - rc.top;
     m_x = x;
-    m_y = y;
-    m_active_tab->resize_view(hdwp, width, height, x, y);
+    m_y = y + rc.top;
+    m_active_tab->resize_view(m_width, m_height, m_x, m_y);
 }
 void Tabs::close_all_tabs()
 {
