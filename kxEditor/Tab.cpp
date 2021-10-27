@@ -103,12 +103,14 @@ void Tab::change_txtview()
 void Tab::change_view()
 {
     if (m_mode == Mode::TEXT) {
-        MoveWindow(m_webhwnd, 0, 0, 0, 0, TRUE);
         MoveWindow(m_txthWnd, m_x, m_y, m_width, m_height, TRUE);
+        ShowWindow(m_webhwnd, SW_HIDE);
+        ShowWindow(m_txthWnd, SW_SHOW);
 
     } else if (m_mode == Mode::TERMINAL || m_mode == Mode::WEBVIEW) {
-        MoveWindow(m_txthWnd, 0, 0, 0, 0, TRUE);
         MoveWindow(m_webhwnd, m_x, m_y, m_width, m_height, TRUE);
+        ShowWindow(m_txthWnd, SW_HIDE);
+        ShowWindow(m_webhwnd, SW_SHOW);
     }
 }
 Mode Tab::get_current_mode()
