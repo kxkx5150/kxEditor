@@ -9,7 +9,7 @@ class TextEditor;
 class WebView;
 
 class Tabs {
-    static int m_tabid;
+    int m_tabid = -1;
 
 private:
     std::deque<Tab*> m_tabs;

@@ -2,8 +2,6 @@
 #include "EditView.h"
 #include <CommCtrl.h>
 
-int Tabs::m_tabid = -1;
-
 Tabs::Tabs()
 {
 }

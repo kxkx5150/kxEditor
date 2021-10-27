@@ -71,28 +71,24 @@ void ContMgr::send_resize_msg_containers(int width, int height, int x, int y)
     int contwidth = width / contsize;
 
     for (int i = 0; i < contsize; i++) {
-        m_containers[i].tabs->resize_view(contwidth, height, x,y);
+        m_containers[i].tabs->resize_view(contwidth, height, x, y);
         x += contwidth;
     }
 }
 void ContMgr::send_resize_msg_textview(HWND hwnd)
 {
-    if (m_containers.size() > 0) {
-        for (int i = 0; i < m_containers.size(); i++) {
-            if (hwnd == m_containers[i].txthwnd) {
-                m_containers[i].tabs->m_active_tab->resize_textview();
-            }
-        }
+    for (int i = 0; i < m_containers.size(); i++) {
+        //if (hwnd == m_containers[i].txthwnd) {
+        m_containers[i].tabs->m_active_tab->resize_textview();
+        //}
     }
 }
 void ContMgr::send_resize_msg_webview(HWND hwnd)
 {
-    if (m_containers.size() > 0) {
-        for (int i = 0; i < m_containers.size(); i++) {
-            if (hwnd == m_containers[i].webvhwnd) {
-                m_containers[i].tabs->m_active_tab->resize_webview();
-            }
-        }
+    for (int i = 0; i < m_containers.size(); i++) {
+        //if (hwnd == m_containers[i].webvhwnd) {
+        m_containers[i].tabs->m_active_tab->resize_webview();
+        //}
     }
 }
 void ContMgr::on_select_tab(HWND hwnd)

@@ -252,7 +252,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         m_contmgr = new ContMgr();
         m_cmdmgr = new CmdMgr(m_contmgr);
         m_contmgr->create_editor_container(hWnd, m_cmdmgr);
+        m_contmgr->create_editor_container(hWnd, m_cmdmgr);
         m_nodemgr = new NodeMgr(m_contmgr, m_cmdmgr);
+
         break;
     }
     case WM_DESTROY: {
