@@ -13,8 +13,11 @@ module.exports = class KeycodeParser {
       const ctrl = obj.ctrl ? true : false;
       const shift = obj.shift ? true : false;
       const alt = obj.alt ? true : false;
+      const contno = obj.contno;
+      const tabno = obj.tabno;
+      const mode = obj.mode;
 
-      console.log(keycode);
+
       let keymapobj = KeyMap;
       if (0 < this.match_index) {
         keymapobj = this.match_keyobj;
@@ -35,6 +38,11 @@ module.exports = class KeycodeParser {
             if (keylen-1 === this.match_index) {
               mobj = {};
               this.clear_match();
+              obj.json.contno = contno;
+              obj.json.tabno = tabno;
+              obj.json.mode = mode;
+
+
               console.log(obj.json);
               cb(obj.json);
               return;

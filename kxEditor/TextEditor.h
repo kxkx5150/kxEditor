@@ -107,7 +107,7 @@ public:
 
     void LoadRegSettings();
     void ApplyRegSettings();
-    LONG WINAPI WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+    LONG WINAPI WndProc(int contno, HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
     LONG OpenFile(TCHAR* szFileName);
     void set_focus();

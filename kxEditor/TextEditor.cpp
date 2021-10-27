@@ -55,7 +55,7 @@ void TextEditor::set_focus()
 {
     SetFocus(m_hWnd_txtedit);
 }
-LONG WINAPI TextEditor::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LONG WINAPI TextEditor::WndProc(int contno, HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     switch (msg) {
 
@@ -114,10 +114,10 @@ LONG WINAPI TextEditor::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
         //    return OnPaste();
 
     case WM_CHAR:
-        return m_cmdmgr->OnChar(wParam, lParam);
+        return m_cmdmgr->OnChar(contno,wParam, lParam);
 
     case WM_KEYDOWN:
-        return m_cmdmgr->parser(wParam, lParam);
+        return m_cmdmgr->on_keydown(contno,wParam, lParam);
     }
 
     return DefWindowProc(hwnd, msg, wParam, lParam);

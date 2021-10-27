@@ -17,10 +17,10 @@ public:
     ~CmdMgr();
     void set_hwnd(HWND hwnd);
 
-    LONG parser(UINT nKeyCode, UINT nFlags);
-    LONG OnChar(UINT nChar, UINT nFlags);
+    LONG on_keydown(int contno, UINT nKeyCode, UINT nFlags);
+    LONG OnChar(int contno, UINT nChar, UINT nFlags);
     LONG exec(std::string message);
-    void send_keycode_json(std::string type, UINT nKeyCode, BOOL ctrl, BOOL shift, BOOL alt);
+    void send_keycode_json(int contno, std::string type, UINT nKeyCode, BOOL ctrl, BOOL shift, BOOL alt);
 
 
 private:

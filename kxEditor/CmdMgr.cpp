@@ -14,7 +14,7 @@ void CmdMgr::set_hwnd(HWND hwnd)
 {
     m_hwnd = hwnd;
 }
-LONG CmdMgr::parser(UINT nKeyCode, UINT nFlags)
+LONG CmdMgr::on_keydown(int contno, UINT nKeyCode, UINT nFlags)
 {
     bool ctrl = GetKeyState(VK_CONTROL) < 0 ? true : false;
     bool shift = GetKeyState(VK_SHIFT) < 0 ? true : false;
@@ -51,7 +51,7 @@ LONG CmdMgr::parser(UINT nKeyCode, UINT nFlags)
     case 'Y':
     case 'Z':
         if (ctrl || alt)
-            send_keycode_json("keydown", nKeyCode, ctrl, shift, alt);
+            send_keycode_json(contno, "keydown", nKeyCode, ctrl, shift, alt);
 
         break;
     case VK_LEFT:
@@ -60,35 +60,33 @@ LONG CmdMgr::parser(UINT nKeyCode, UINT nFlags)
     case VK_DOWN:
     case VK_BACK:
     case VK_DELETE:
-        send_keycode_json("keydown", nKeyCode, ctrl, shift, alt);
-        break;
-
+        send_keycode_json(contno, "keydown", nKeyCode, ctrl, shift, alt);
         break;
     }
     return 0;
 }
-LONG CmdMgr::OnChar(UINT nChar, UINT nFlags)
+LONG CmdMgr::OnChar(int contno, UINT nChar, UINT nFlags)
 {
     TCHAR ch = (TCHAR)nChar;
 
     if (nChar == '\r') {
-        PostMessage(m_hwnd, WM_CHAR, '\n', 1);
+        OnChar(contno, (UINT)'\n', nFlags);
 
     } else if (nChar == '\n') {
-        m_contmgr->m_containers[m_contmgr->m_active_cont_no].tabs->m_active_tab->m_docmgr->keydown_enter(&ch, 1);
+        m_contmgr->m_containers[contno].tabs->m_active_tab->m_docmgr->keydown_enter(&ch, 1);
 
     } else if (nChar > 31 || nChar == '\t') {
-        m_contmgr->m_containers[m_contmgr->m_active_cont_no].tabs->m_active_tab->m_docmgr->keydown_text(&ch, 1);
+        m_contmgr->m_containers[contno].tabs->m_active_tab->m_docmgr->keydown_text(&ch, 1);
     }
 
     return 0;
 }
-void CmdMgr::send_keycode_json(std::string type, UINT nKeyCode, BOOL ctrl, BOOL shift, BOOL alt)
+void CmdMgr::send_keycode_json(int contno, std::string type, UINT nKeyCode, BOOL ctrl, BOOL shift, BOOL alt)
 {
     nlohmann::json j;
-    j["contno"] = m_contmgr->m_active_cont_no;
-    j["tabno"] = m_contmgr->m_containers[m_contmgr->m_active_cont_no].tabs->m_active_tab_no;
-    j["mode"] = m_contmgr->m_containers[m_contmgr->m_active_cont_no].tabs->m_active_tab->m_docmgr->m_editor_mode;
+    j["contno"] = contno;
+    j["tabno"] = m_contmgr->m_containers[contno].tabs->m_active_tab_no;
+    j["mode"] = m_contmgr->m_containers[contno].tabs->m_active_tab->m_docmgr->m_editor_mode;
     j["type"] = type;
     j["keycode"] = nKeyCode;
     j["ctrl"] = ctrl;
@@ -102,34 +100,40 @@ LONG CmdMgr::exec(std::string message)
 
     for (int i = 0; i < j["commands"].size(); ++i) {
         if (j["commands"][i]["type"] == "caret") {
+
             if (j["commands"][i]["command"] == "right") {
-                m_contmgr->m_containers[m_contmgr->m_active_cont_no].tabs->m_active_tab->m_docmgr->move_caret(VK_RIGHT);
+                m_contmgr->m_containers[j["contno"]].tabs->m_tabs[j["tabno"]]->m_docmgr->move_caret(VK_RIGHT);
 
             } else if (j["commands"][i]["command"] == "left") {
-                m_contmgr->m_containers[m_contmgr->m_active_cont_no].tabs->m_active_tab->m_docmgr->move_caret(VK_LEFT);
+                m_contmgr->m_containers[j["contno"]].tabs->m_tabs[j["tabno"]]->m_docmgr->move_caret(VK_LEFT);
 
             } else if (j["commands"][i]["command"] == "up") {
-                m_contmgr->m_containers[m_contmgr->m_active_cont_no].tabs->m_active_tab->m_docmgr->move_caret(VK_UP);
+                m_contmgr->m_containers[j["contno"]].tabs->m_tabs[j["tabno"]]->m_docmgr->move_caret(VK_UP);
 
             } else if (j["commands"][i]["command"] == "down") {
-                m_contmgr->m_containers[m_contmgr->m_active_cont_no].tabs->m_active_tab->m_docmgr->move_caret(VK_DOWN);
+                m_contmgr->m_containers[j["contno"]].tabs->m_tabs[j["tabno"]]->m_docmgr->move_caret(VK_DOWN);
             }
+
         } else if (j["commands"][i]["type"] == "clipboard") {
+
             if (j["commands"][i]["command"] == "paste") {
-                m_contmgr->m_containers[m_contmgr->m_active_cont_no].tabs->m_active_tab->m_docmgr->on_paste();
+                m_contmgr->m_containers[j["contno"]].tabs->m_tabs[j["tabno"]]->m_docmgr->on_paste();
 
             } else if (j["commands"][i]["command"] == "copy") {
-                m_contmgr->m_containers[m_contmgr->m_active_cont_no].tabs->m_active_tab->m_docmgr->on_copy();
+                m_contmgr->m_containers[j["contno"]].tabs->m_tabs[j["tabno"]]->m_docmgr->on_copy();
 
             } else if (j["commands"][i]["command"] == "cut") {
-                m_contmgr->m_containers[m_contmgr->m_active_cont_no].tabs->m_active_tab->m_docmgr->on_cut();
+                m_contmgr->m_containers[j["contno"]].tabs->m_tabs[j["tabno"]]->m_docmgr->on_cut();
             }
+
         } else if (j["commands"][i]["type"] == "input") {
+
             if (j["commands"][i]["command"] == "backspace") {
-                m_contmgr->m_containers[m_contmgr->m_active_cont_no].tabs->m_active_tab->m_docmgr->keydown_backspace();
+                m_contmgr->m_containers[j["contno"]].tabs->m_tabs[j["tabno"]]->m_docmgr->keydown_backspace();
 
             } else if (j["commands"][i]["command"] == "delete") {
-                m_contmgr->m_containers[m_contmgr->m_active_cont_no].tabs->m_active_tab->m_docmgr->keydown_delete();
+                m_contmgr->m_containers[j["contno"]].tabs->m_tabs[j["tabno"]]->m_docmgr->keydown_delete();
+
             }
 
         } else if (j["type"] == "none") {

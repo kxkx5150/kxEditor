@@ -12,7 +12,6 @@ class Tabs {
     int m_tabid = -1;
 
 private:
-    std::deque<Tab*> m_tabs;
     HWND m_hwnd;
     HWND m_tabhWnd;
     HWND m_txthWnd;
@@ -23,6 +22,8 @@ private:
     WebView* m_webeditr = nullptr;
 
 public:
+    std::deque<Tab*> m_tabs;
+
     Tab* m_active_tab = nullptr;
     int m_active_tab_no = 0;
 

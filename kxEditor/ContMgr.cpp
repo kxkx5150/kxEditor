@@ -57,7 +57,7 @@ LONG ContMgr::send_msg_container(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPar
     if (m_containers.size() > 0) {
         for (int i = 0; i < m_containers.size(); i++) {
             if (hwnd == m_containers[i].txthwnd) {
-                return m_containers[i].txteditor->WndProc(hwnd, msg, wParam, lParam);
+                return m_containers[i].txteditor->WndProc(i,hwnd, msg, wParam, lParam);
             }
         }
     }
