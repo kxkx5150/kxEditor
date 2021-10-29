@@ -7,6 +7,7 @@ class TextEditor;
 class editview;
 class tabs;
 class CmdMgr;
+class NodeMgr;
 struct EditorContainer;
 
 class ContMgr {
@@ -14,6 +15,8 @@ class ContMgr {
 public:
     HWND m_mainhwnd;
     HWND m_hwndStatusbar;
+
+    NodeMgr* m_nodemgr = nullptr;
     CmdMgr* m_cmdmgr = nullptr;
 
     std::vector<EditorContainer> m_containers;
@@ -21,7 +24,7 @@ public:
 
 
 public:
-    ContMgr();
+    ContMgr(NodeMgr* m_nodemgr);
     ~ContMgr();
 
     void create_editor_container(HWND hwnd);

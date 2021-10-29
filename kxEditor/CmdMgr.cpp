@@ -2,8 +2,9 @@
 #include <nlohmann/json.hpp>
 #include <windows.h>
 
-CmdMgr::CmdMgr(ContMgr* contmgr)
+CmdMgr::CmdMgr(NodeMgr* nodemgr,ContMgr* contmgr)
 {
+    m_nodemgr = nodemgr;
     m_contmgr = contmgr;
 }
 

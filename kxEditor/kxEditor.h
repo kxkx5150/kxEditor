@@ -12,13 +12,13 @@
 #include "WebView2.h"
 
 HINSTANCE hInst;
-extern NodeMgr* m_nodemgr = nullptr;
+HWND m_mainhwnd;
 
-ContMgr* m_contmgr = nullptr;
+NodeMgr* m_nodemgr = nullptr;
 std::map<HWND, ContMgr*> m_contmgrs;
 
 extern BOOL g_fShowScrollH = false;
-BOOL g_fShowTabControl = true;
+extern BOOL g_fShowTabControl = true;
 
 WCHAR szTitle[MAX_LOADSTRING];
 WCHAR szWindowClass[MAX_LOADSTRING];

@@ -2,9 +2,10 @@
 #include "TextEditor.h"
 #include <CommCtrl.h>
 
-ContMgr::ContMgr()
+ContMgr::ContMgr(NodeMgr* nodemgr)
 {
-    m_cmdmgr = new CmdMgr(this);
+    m_nodemgr = nodemgr;
+    m_cmdmgr = new CmdMgr(nodemgr,this);
 }
 ContMgr::~ContMgr()
 {

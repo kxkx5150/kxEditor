@@ -13,7 +13,7 @@
 #include "Shellapi.h"
 #include <crtdbg.h>
 
-extern NodeMgr* m_nodemgr;
+NodeMgr* self;
 
 using namespace web;
 using namespace web::http;
@@ -33,6 +33,7 @@ websocket::stream<tcp::socket> b_ws { ioc };
 
 NodeMgr::NodeMgr()
 {
+    self = this;
     SetConsoleOutputCP(CP_UTF8);
     init_node();
     Sleep(300);
@@ -149,14 +150,14 @@ void NodeMgr::http_post_response(TCHAR* resp)
 pplx::task<void> Get()
 {
     return pplx::create_task([] {
-        http_client client(m_nodemgr->m_geturl);
+        http_client client(self->m_geturl);
         return client.request(methods::GET);
     }).then([](http_response response) {
         if (response.status_code() == status_codes::OK) {
             OutputDebugString(L"------http get ok-------\n");
             std::wstring json_bom = response.extract_string().get().c_str();
             const TCHAR* wcs = json_bom.c_str();
-            m_nodemgr->http_get_response((TCHAR*)wcs);
+            self->http_get_response((TCHAR*)wcs);
             //return response.extract_json();
         }
     });
@@ -174,14 +175,14 @@ pplx::task<int> Post()
         postData[L"user_info"][L"name"] = json::value::string(L"user‚ ‚¢‚¤‚¦‚¨");
         postData[L"user_info"][L"sex"] = json::value::string(sex);
         postData[L"user_info"][L"age"] = json::value::number(20);
-        http_client client(m_nodemgr->m_geturl);
+        http_client client(self->m_geturl);
         return client.request(methods::POST, L"", postData.serialize(), L"application/json");
     }).then([](http_response response) {
         if (response.status_code() == status_codes::OK) {
             OutputDebugString(L"------http post ok-------\n");
             std::wstring json_bom = response.extract_string().get().c_str();
             const TCHAR* wcs = json_bom.c_str();
-            m_nodemgr->http_post_response((TCHAR*)wcs);
+            self->http_post_response((TCHAR*)wcs);
             //auto body = response.extract_string();
             //std::wcout << body.get().c_str() << std::endl;
             //std::cout << response.extract_json() << std::endl;

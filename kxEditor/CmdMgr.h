@@ -5,15 +5,15 @@
 class ContMgr;
 class NodeMgr;
 struct EditorContainer;
-extern NodeMgr* m_nodemgr;
 
 class CmdMgr {
 private:
     HWND m_hwnd = nullptr;
+    NodeMgr* m_nodemgr = nullptr;
     ContMgr* m_contmgr = nullptr;
 
 public:
-    CmdMgr(ContMgr* contmgr);
+    CmdMgr(NodeMgr* nodemgr,ContMgr* contmgr);
     ~CmdMgr();
     void set_hwnd(HWND hwnd);
 

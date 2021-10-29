@@ -176,7 +176,7 @@ BOOL ShowOpenFileDlg(HWND hwnd, TCHAR* pstrFileName, TCHAR* pstrTitleName)
 
 BOOL DoOpenFile(HWND hwndMain, TCHAR* szFileName, TCHAR* szFileTitle)
 {
-    m_contmgr->open_file_container(m_contmgr->m_active_cont_no, szFileName);
+    m_contmgrs[hwndMain]->open_file_container(m_contmgrs[hwndMain]->m_active_cont_no, szFileName);
     if (true) {
         if (_tcslen(szFileName) == 0)
             SetWindowFileName(hwndMain, (TCHAR*)L"Untitled", FALSE);
@@ -185,7 +185,6 @@ BOOL DoOpenFile(HWND hwndMain, TCHAR* szFileName, TCHAR* szFileTitle)
 
         return TRUE;
     } else {
-
     }
     return FALSE;
 }
@@ -221,22 +220,25 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hpins, _In_ L
 }
 void SetWindSize(HWND hwnd, int width, int height)
 {
-    m_contmgr->send_resize_msg_containers(width, height, 0, 0);
+    m_contmgrs[hwnd]->send_resize_msg_containers(width, height, 0, 0);
 }
 void OnSelChange(HWND hwnd)
 {
-    m_contmgr->on_select_tab(hwnd);
+    m_contmgrs[m_mainhwnd]->on_select_tab(hwnd);
 }
 void create_manager(HWND hWnd)
 {
     if (!m_nodemgr)
         m_nodemgr = new NodeMgr();
-    m_contmgr = new ContMgr();
-    m_contmgr->create_editor_container(hWnd);
-    m_contmgrs[hWnd] = m_contmgr;
+    auto contmgr = new ContMgr(m_nodemgr);
+    m_contmgrs[hWnd] = contmgr;
+    contmgr->create_editor_container(hWnd);
 }
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+    if (!m_mainhwnd)
+        m_mainhwnd = hWnd;
+
     switch (message) {
 
     case WM_COMMAND: {
@@ -245,7 +247,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     }
     case WM_CREATE: {
         create_manager(hWnd);
-
         break;
     }
     case WM_DESTROY: {
@@ -261,7 +262,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     }
     case WM_SETFOCUS: {
-        m_contmgr->set_focus_container(m_contmgr->m_active_cont_no);
+        m_contmgrs[hWnd]->set_focus_container(m_contmgrs[hWnd]->m_active_cont_no);
         break;
     }
     case WM_NOTIFY: {
@@ -294,15 +295,15 @@ LRESULT CALLBACK WndCommandProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
         return 0;
     }
     case ID_WEBVIEW_OPEN: {
-        m_contmgr->change_webview();
+        m_contmgrs[hWnd]->change_webview();
         return 0;
     }
     case ID_MODE_TERMINAL: {
-        m_contmgr->change_cmdview();
+        m_contmgrs[hWnd]->change_cmdview();
         return 0;
     }
     case ID_TEXTVIEW_OPEN: {
-        m_contmgr->change_txtview();
+        m_contmgrs[hWnd]->change_txtview();
         return 0;
     }
     case ID_FILE_NEW:
@@ -315,7 +316,7 @@ LRESULT CALLBACK WndCommandProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
         return 0;
 
     case ID_SPLIT_VERTICAL: {
-        m_contmgr->split_vertical();
+        m_contmgrs[hWnd]->split_vertical();
         //RECT rect;
         //GetClientRect(hWnd, &rect);
         //int width = rect.right - rect.left;
@@ -344,11 +345,11 @@ LRESULT WINAPI TextViewWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
     case WM_NCDESTROY:
         break;
     case WM_SIZE: {
-        m_contmgr->send_resize_msg_textview(hwnd);
+        m_contmgrs[m_mainhwnd]->send_resize_msg_textview(hwnd);
         break;
     }
     default:
-        return m_contmgr->send_msg_container(hwnd, msg, wParam, lParam);
+        return m_contmgrs[m_mainhwnd]->send_msg_container(hwnd, msg, wParam, lParam);
     }
 
     return 0;
@@ -378,7 +379,7 @@ LRESULT CALLBACK WebViewWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
         return 0;
 
     case WM_SIZE: {
-        m_contmgr->send_resize_msg_webview(hWnd);
+        m_contmgrs[m_mainhwnd]->send_resize_msg_webview(hWnd);
         break;
     }
     default:
