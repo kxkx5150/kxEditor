@@ -11,6 +11,10 @@
 #include <wrl.h>
 #include "WebView2.h"
 
+WCHAR szTitle[MAX_LOADSTRING];
+WCHAR szWindowClass[MAX_LOADSTRING];
+TCHAR g_szAppName[] = APP_TITLE;
+
 HINSTANCE hInst;
 HWND m_mainhwnd;
 
@@ -19,10 +23,6 @@ std::map<HWND, ContMgr*> m_contmgrs;
 
 extern BOOL g_fShowScrollH = false;
 extern BOOL g_fShowTabControl = true;
-
-WCHAR szTitle[MAX_LOADSTRING];
-WCHAR szWindowClass[MAX_LOADSTRING];
-TCHAR g_szAppName[] = APP_TITLE;
 
 void InitOpenFile(HWND hwnd, int fmt);
 BOOL ShowOpenFileDlg(HWND hwnd, TCHAR* pstrFileName, TCHAR* pstrTitleName);
