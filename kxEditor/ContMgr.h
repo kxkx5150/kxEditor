@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <windows.h>
+#include "StatusBar.h"
 
 class TextEditor;
 class editview;
@@ -11,6 +12,9 @@ struct EditorContainer;
 class ContMgr {
 
 public:
+    HWND m_mainhwnd;
+    HWND m_hwndStatusbar;
+
     std::vector<EditorContainer> m_containers;
     int m_active_cont_no = 0;
 
@@ -31,11 +35,16 @@ public:
     void send_resize_msg_containers(int width, int height, int x, int y);
     void send_resize_msg_textview(HWND hwnd);
     void send_resize_msg_webview(HWND hwnd);
+    void resize_statusbar(int width, int height);
+
     void on_select_tab(HWND hwnd);
 
     void change_webview();
     void change_cmdview();
     void change_txtview();
+
+    void split_vertical();
+
 
 private:
 };

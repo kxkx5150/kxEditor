@@ -28,7 +28,7 @@ ATOM InitMainView(HINSTANCE hInstance)
 }
 HWND CreateMainView(HINSTANCE hInstance, int nCmdShow)
 {
-    hInst = hInstance; // Store instance handle in our global variable
+    hInst = hInstance;
     HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
         CW_USEDEFAULT, 0, 1000, 800, nullptr, nullptr, hInstance, nullptr);
 
@@ -52,7 +52,7 @@ BOOL InitTextView()
     wcx.hInstance = GetModuleHandle(0);
     wcx.hIcon = 0;
     wcx.hCursor = LoadCursor(NULL, IDC_IBEAM);
-    wcx.hbrBackground = (HBRUSH)0; //NO FLICKERING FOR US!!
+    wcx.hbrBackground = (HBRUSH)0;
     wcx.lpszMenuName = 0;
     wcx.lpszClassName = TEXTVIEW_CLASS;
     wcx.hIconSm = 0;
@@ -87,7 +87,7 @@ BOOL InitWebView()
     wcx.hInstance = GetModuleHandle(0);
     wcx.hIcon = 0;
     wcx.hCursor = LoadCursor(nullptr, IDC_ARROW);
-    wcx.hbrBackground = (HBRUSH)0; //NO FLICKERING FOR US!!
+    wcx.hbrBackground = (HBRUSH)0;
     wcx.lpszMenuName = 0;
     wcx.lpszClassName = WEBVIEW_CLASS;
     wcx.hIconSm = 0;
@@ -118,12 +118,13 @@ HWND CreateTabControl(HWND hWnd)
     RECT rc;
     GetClientRect(hWnd, &rc);
     HWND hTab = CreateWindowEx(0, WC_TABCONTROL, 0,
-        TCS_FIXEDWIDTH | WS_CHILD | WS_VISIBLE ,
+        TCS_FIXEDWIDTH | WS_CHILD | WS_VISIBLE,
         rc.left, rc.top, rc.right, rc.bottom,
         hWnd, (HMENU)IDC_TAB, hInst, 0);
 
     SendMessage(hTab, WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT), 0);
     SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)hTab);
+    //defEditWndProc = (WNDPROC)SetWindowLongPtr(hTab, GWLP_WNDPROC, (LONG_PTR)EditWindowProc);
     return hTab;
 }
 void SetWindowFileName(HWND hwnd, TCHAR* szFileName, BOOL fModified)
@@ -139,6 +140,8 @@ void SetWindowFileName(HWND hwnd, TCHAR* szFileName, BOOL fModified)
 }
 void InitOpenFile(HWND hwnd, int fmt)
 {
+    TCHAR g_szFileName[MAX_PATH];
+    TCHAR g_szFileTitle[MAX_PATH];
     g_szFileTitle[0] = '\0';
     g_szFileName[0] = '\0';
 
@@ -170,6 +173,7 @@ BOOL ShowOpenFileDlg(HWND hwnd, TCHAR* pstrFileName, TCHAR* pstrTitleName)
     ofn.Flags = OFN_EXPLORER | OFN_ENABLESIZING | OFN_ALLOWMULTISELECT | OFN_FILEMUSTEXIST | 0; //OFN_ENABLEHOOK			;
     return GetOpenFileName(&ofn);
 }
+
 BOOL DoOpenFile(HWND hwndMain, TCHAR* szFileName, TCHAR* szFileTitle)
 {
     m_contmgr->open_file_container(m_contmgr->m_active_cont_no, szFileName);
@@ -181,7 +185,7 @@ BOOL DoOpenFile(HWND hwndMain, TCHAR* szFileName, TCHAR* szFileTitle)
 
         return TRUE;
     } else {
-        SetStatusBarText(g_hwndStatusbar, 0, 0, (TCHAR*)L"Error opening");
+
     }
     return FALSE;
 }
@@ -215,30 +219,24 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hpins, _In_ L
 
     return (int)msg.wParam;
 }
-void SetWindSize(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+void SetWindSize(HWND hwnd, int width, int height)
 {
-    RECT rect;
-    int width = (short)LOWORD(lParam);
-    int height = (short)HIWORD(lParam);
-
-    GetWindowRect(g_hwndStatusbar, &rect);
-    int heightsb = rect.bottom - rect.top;
-
-    if (g_fShowStatusbar) {
-        MoveWindow(g_hwndStatusbar, 0, height - heightsb, width, heightsb, TRUE);
-        SetStatusBarParts(g_hwndStatusbar);
-        height -= heightsb;
-    } else {
-        MoveWindow(g_hwndStatusbar, 0, height, width, 0, TRUE);
-    }
-
-    ShowWindow(g_hwndStatusbar, SW_SHOW);
     m_contmgr->send_resize_msg_containers(width, height, 0, 0);
 }
 void OnSelChange(HWND hwnd)
 {
     m_contmgr->on_select_tab(hwnd);
 }
+void create_manager(HWND hWnd)
+{
+    m_contmgr = new ContMgr();
+    m_cmdmgr = new CmdMgr(m_contmgr);
+    if (!m_nodemgr)
+        m_nodemgr = new NodeMgr(m_contmgr, m_cmdmgr);
+
+    m_contmgr->create_editor_container(hWnd, m_cmdmgr);
+}
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message) {
@@ -248,12 +246,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     }
     case WM_CREATE: {
-        g_hwndStatusbar = CreateStatusBar(hWnd);
-        m_contmgr = new ContMgr();
-        m_cmdmgr = new CmdMgr(m_contmgr);
-        m_contmgr->create_editor_container(hWnd, m_cmdmgr);
-        m_contmgr->create_editor_container(hWnd, m_cmdmgr);
-        m_nodemgr = new NodeMgr(m_contmgr, m_cmdmgr);
+        create_manager(hWnd);
 
         break;
     }
@@ -265,7 +258,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     }
     case WM_SIZE: {
-        SetWindSize(hWnd, message, wParam, lParam);
+        int width = (short)LOWORD(lParam);
+        int height = (short)HIWORD(lParam);
+        SetWindSize(hWnd, width, height);
         break;
     }
     case WM_SETFOCUS: {
@@ -308,7 +303,7 @@ LRESULT CALLBACK WndCommandProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
     case ID_MODE_TERMINAL: {
         m_contmgr->change_cmdview();
         return 0;
-    }           
+    }
     case ID_TEXTVIEW_OPEN: {
         m_contmgr->change_txtview();
         return 0;
@@ -321,6 +316,21 @@ LRESULT CALLBACK WndCommandProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
     case IDM_EXIT:
         DestroyWindow(hWnd);
         return 0;
+
+    case ID_SPLIT_VERTICAL: {
+        m_contmgr->split_vertical();
+        //RECT rect;
+        //GetClientRect(hWnd, &rect);
+        //int width = rect.right - rect.left;
+        //int height = rect.bottom - rect.top;
+        //SetWindSize(hWnd, width, height);
+        return 0;
+    }
+
+    case ID_SPLIT_HORIZONTAL: {
+
+        return 0;
+    }
 
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
@@ -377,6 +387,15 @@ LRESULT CALLBACK WebViewWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
+
+    return 0;
+}
+LRESULT CALLBACK EditWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    //switch (message) {
+    //default:
+    //    return CallWindowProc(defEditWndProc, hWnd, message, wParam, lParam);
+    //}
 
     return 0;
 }

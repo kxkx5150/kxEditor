@@ -11,9 +11,15 @@ ContMgr::~ContMgr()
 }
 void ContMgr::create_editor_container(HWND hwnd, CmdMgr* cmdmgr)
 {
+    if (!m_mainhwnd) {
+        m_mainhwnd = hwnd;
+        m_cmdmgr = cmdmgr;
+        m_hwndStatusbar = CreateStatusBar(hwnd);
+
+    }
+
     TextEditor* g_ptv = new TextEditor(hwnd, cmdmgr);
     EditorContainer econt = g_ptv->create_editor_container();
-    m_cmdmgr = cmdmgr;
     m_containers.push_back(econt);
 }
 void ContMgr::delete_editor_container(int idx)
@@ -54,22 +60,46 @@ void ContMgr::change_txtview()
 }
 LONG ContMgr::send_msg_container(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-    if (m_containers.size() > 0) {
-        for (int i = 0; i < m_containers.size(); i++) {
-            if (hwnd == m_containers[i].txthwnd) {
-                return m_containers[i].txteditor->WndProc(i,hwnd, msg, wParam, lParam);
-            }
+    BOOL focusflg = false;
+    if (msg == WM_SETFOCUS)
+        focusflg = true;
+
+    for (int i = 0; i < m_containers.size(); i++) {
+        if (hwnd == m_containers[i].txthwnd) {
+            if (focusflg)
+                m_active_cont_no = i;
+            return m_containers[i].txteditor->WndProc(i, hwnd, msg, wParam, lParam);
         }
     }
+
     return 0;
+}
+void ContMgr::resize_statusbar(int width, int height)
+{
+    if (!m_hwndStatusbar)
+        return;
+    RECT rect;
+    GetWindowRect(m_hwndStatusbar, &rect);
+    int heightsb = rect.bottom - rect.top;
+
+    if (true) {
+        MoveWindow(m_hwndStatusbar, 0, height - heightsb, width, heightsb, TRUE);
+        SetStatusBarParts(m_hwndStatusbar);
+        height -= heightsb;
+    } else {
+        MoveWindow(m_hwndStatusbar, 0, height, width, 0, TRUE);
+    }
+
+    ShowWindow(m_hwndStatusbar, SW_SHOW);
 }
 void ContMgr::send_resize_msg_containers(int width, int height, int x, int y)
 {
+    resize_statusbar(width, height);
     int contsize = m_containers.size();
     if (contsize < 1)
         return;
-    int contwidth = width / contsize;
 
+    int contwidth = width / contsize;
     for (int i = 0; i < contsize; i++) {
         m_containers[i].tabs->resize_view(contwidth, height, x, y);
         x += contwidth;
@@ -78,20 +108,29 @@ void ContMgr::send_resize_msg_containers(int width, int height, int x, int y)
 void ContMgr::send_resize_msg_textview(HWND hwnd)
 {
     for (int i = 0; i < m_containers.size(); i++) {
-        //if (hwnd == m_containers[i].txthwnd) {
-        m_containers[i].tabs->m_active_tab->resize_textview();
-        //}
+        if (hwnd == m_containers[i].txthwnd) {
+            m_containers[i].tabs->m_active_tab->resize_textview();
+        }
     }
 }
 void ContMgr::send_resize_msg_webview(HWND hwnd)
 {
     for (int i = 0; i < m_containers.size(); i++) {
-        //if (hwnd == m_containers[i].webvhwnd) {
-        m_containers[i].tabs->m_active_tab->resize_webview();
-        //}
+        if (hwnd == m_containers[i].webvhwnd) {
+            m_containers[i].tabs->m_active_tab->resize_webview();
+        }
     }
 }
 void ContMgr::on_select_tab(HWND hwnd)
 {
     m_containers[m_active_cont_no].tabs->on_select_tab(hwnd);
+}
+void ContMgr::split_vertical()
+{
+    _RPTN(_CRT_WARN, "active cont : %d\n", m_active_cont_no);
+    //create_editor_container(m_mainhwnd, m_cmdmgr);
+
+    //for (int i = 0; i < m_containers.size(); i++) {
+    //    InvalidateRect(m_containers[i].prnthwnd, NULL, FALSE);
+    //}
 }

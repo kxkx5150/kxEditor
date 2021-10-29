@@ -6,29 +6,23 @@
 #include "ContMgr.h"
 #include "NodeMgr.h"
 #include "CmdMgr.h"
-#include "StatusBar.h"
 #include <wil/com.h>
 #include <windows.h>
 #include <wrl.h>
 #include "WebView2.h"
 
 HINSTANCE hInst;
-HWND g_hwndStatusbar;
-HWND g_hwndwebview;
-
 extern NodeMgr* m_nodemgr = nullptr;
+
 ContMgr* m_contmgr = nullptr;
 CmdMgr* m_cmdmgr = nullptr;
 
 extern BOOL g_fShowScrollH = false;
-BOOL g_fShowStatusbar = true;
 BOOL g_fShowTabControl = true;
 
 WCHAR szTitle[MAX_LOADSTRING];
 WCHAR szWindowClass[MAX_LOADSTRING];
 TCHAR g_szAppName[] = APP_TITLE;
-TCHAR g_szFileName[MAX_PATH];
-TCHAR g_szFileTitle[MAX_PATH];
 
 void InitOpenFile(HWND hwnd, int fmt);
 BOOL ShowOpenFileDlg(HWND hwnd, TCHAR* pstrFileName, TCHAR* pstrTitleName);
@@ -37,3 +31,4 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK WndCommandProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 LRESULT WINAPI TextViewWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK WebViewWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+LRESULT CALLBACK EditWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);

@@ -51,7 +51,6 @@ static const TCHAR* CtrlStr(DWORD ch)
 }
 
 extern BOOL g_fShowScrollH;
-extern NodeMgr* m_nodemgr;
 
 class TextEditor {
     friend class EditView;
@@ -111,6 +110,7 @@ public:
 
     LONG OpenFile(TCHAR* szFileName);
     void set_focus();
+    void refres_edit_view();
 
 public:
     long long GetLineCount();

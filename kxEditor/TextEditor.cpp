@@ -55,6 +55,11 @@ void TextEditor::set_focus()
 {
     SetFocus(m_hWnd_txtedit);
 }
+void TextEditor::refres_edit_view()
+{
+    m_editview->OnPaint();
+}
+
 LONG WINAPI TextEditor::WndProc(int contno, HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     switch (msg) {

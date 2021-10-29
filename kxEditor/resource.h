@@ -67,6 +67,10 @@
 #define ID_TEXTEDITOR                   32790
 #define ID_TEXTVIEW_OPEN                32791
 #define ID_MODE_TERMINAL                32792
+#define ID_SPLIT                        32793
+#define ID_SPLIT32794                   32794
+#define ID_SPLIT_VERTICAL               32795
+#define ID_SPLIT_HORIZONTAL             32796
 #define SPVERSION_MASK                  0x0000FF00
 #define IDC_STATIC                      -1
 
@@ -76,7 +80,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        129
-#define _APS_NEXT_COMMAND_VALUE         32793
+#define _APS_NEXT_COMMAND_VALUE         32797
 #define _APS_NEXT_CONTROL_VALUE         1000
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
