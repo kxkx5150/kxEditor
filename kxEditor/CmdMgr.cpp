@@ -92,7 +92,7 @@ void CmdMgr::send_keycode_json(int contno, std::string type, UINT nKeyCode, BOOL
     j["ctrl"] = ctrl;
     j["shift"] = shift;
     j["alt"] = alt;
-    m_nodemgr->beast_ws_write(j);
+    m_nodemgr->beast_ws_write(m_contmgr,j);
 }
 LONG CmdMgr::exec(std::string message)
 {

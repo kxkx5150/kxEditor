@@ -28,7 +28,7 @@ public:
     
     int beast_ws_start();
     int beast_ws_close();
-    int beast_ws_write(nlohmann::json j);
+    int beast_ws_write(ContMgr* contmgr, nlohmann::json j);
 
 
 private:

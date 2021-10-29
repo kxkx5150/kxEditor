@@ -15,6 +15,8 @@ HINSTANCE hInst;
 extern NodeMgr* m_nodemgr = nullptr;
 extern ContMgr* m_contmgr = nullptr;
 
+std::map<HWND, ContMgr*> m_contmgrs;
+
 extern BOOL g_fShowScrollH = false;
 BOOL g_fShowTabControl = true;
 
