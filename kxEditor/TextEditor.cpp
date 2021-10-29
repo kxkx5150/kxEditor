@@ -14,7 +14,7 @@ TextEditor::~TextEditor()
 {
     DeleteObject(g_hFont);
 }
-EditorContainer TextEditor::create_editor_container()
+EditorContainer TextEditor::create_editor_container(int contno)
 {
     m_hwnd_tabctrl = CreateTabControl(m_hWnd);
     m_hWnd_txtedit = CreateTextView(m_hwnd_tabctrl);
@@ -23,10 +23,11 @@ EditorContainer TextEditor::create_editor_container()
     m_tabs = new Tabs();
     m_editview = new EditView(m_hWnd_txtedit, this, m_tabs);
     m_webview = new WebView(m_hwnd_webview);
-    
+
     m_cmdmgr->set_hwnd(m_hWnd_txtedit);
     m_tabs->init_tabs(m_hWnd, m_hwnd_tabctrl, this, m_hWnd_txtedit, m_editview, m_hwnd_webview, m_webview);
 
+    m_contno = contno;
     EditorContainer econt;
     econt.prnthwnd = m_hWnd;
     econt.tabhwnd = m_hwnd_tabctrl;
@@ -119,10 +120,10 @@ LONG WINAPI TextEditor::WndProc(int contno, HWND hwnd, UINT msg, WPARAM wParam, 
         //    return OnPaste();
 
     case WM_CHAR:
-        return m_cmdmgr->OnChar(contno,wParam, lParam);
+        return m_cmdmgr->OnChar(contno, wParam, lParam);
 
     case WM_KEYDOWN:
-        return m_cmdmgr->on_keydown(contno,wParam, lParam);
+        return m_cmdmgr->on_keydown(contno, wParam, lParam);
     }
 
     return DefWindowProc(hwnd, msg, wParam, lParam);

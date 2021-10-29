@@ -20,8 +20,9 @@ void ContMgr::create_editor_container(HWND hwnd)
     }
 
     TextEditor* g_ptv = new TextEditor(hwnd, m_cmdmgr);
-    EditorContainer econt = g_ptv->create_editor_container();
+    EditorContainer econt = g_ptv->create_editor_container(m_containers.size());
     m_containers.push_back(econt);
+    SetWindowLongPtr(econt.txthwnd, 0, (LONG)g_ptv);
 }
 void ContMgr::delete_editor_container(int idx)
 {

@@ -57,7 +57,7 @@ BOOL InitTextView()
     wcx.style = CS_DBLCLKS;
     wcx.lpfnWndProc = TextViewWndProc;
     wcx.cbClsExtra = 0;
-    wcx.cbWndExtra = 0;
+    wcx.cbWndExtra = sizeof(TextEditor*);
     wcx.hInstance = GetModuleHandle(0);
     wcx.hIcon = 0;
     wcx.hCursor = LoadCursor(NULL, IDC_IBEAM);
@@ -214,7 +214,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hpins, _In_ L
     InitWebView();
 
     CreateMainView(hInstance, nCmdShow, szWindowClass);
-    CreateMainView(hInstance, nCmdShow, szWindowClass2);
+    CreateMainView(hInstance, nCmdShow, szWindowClass);
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_KEDITOR));
     MSG msg;
@@ -230,9 +230,9 @@ void SetWindSize(HWND hwnd, int width, int height)
 {
     m_contmgrs[hwnd]->send_resize_msg_containers(width, height, 0, 0);
 }
-void OnSelChange(HWND hwnd)
+void OnSelChange(HWND mainhwnd, HWND hwnd)
 {
-    m_contmgrs[m_mainhwnd]->on_select_tab(hwnd);
+    m_contmgrs[mainhwnd]->on_select_tab(hwnd);
 }
 void create_manager(HWND hWnd)
 {
@@ -273,7 +273,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_NOTIFY: {
         switch (((LPNMHDR)lParam)->code) {
         case TCN_SELCHANGE:
-            //OnSelChange(((LPNMHDR)lParam)->hwndFrom);
+            OnSelChange(hWnd, ((LPNMHDR)lParam)->hwndFrom);
             break;
         }
     } break;
@@ -314,7 +314,7 @@ LRESULT CALLBACK WndProc2(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_NOTIFY: {
         switch (((LPNMHDR)lParam)->code) {
         case TCN_SELCHANGE:
-            //OnSelChange(((LPNMHDR)lParam)->hwndFrom);
+            OnSelChange(hWnd, ((LPNMHDR)lParam)->hwndFrom);
             break;
         }
     } break;
@@ -390,12 +390,18 @@ LRESULT WINAPI TextViewWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
 
     case WM_NCDESTROY:
         break;
+
     case WM_SIZE: {
-        m_contmgrs[m_mainhwnd]->send_resize_msg_textview(hwnd);
+        TextEditor* pte = (TextEditor*)GetWindowLongPtr(hwnd, 0);
+        if (pte)
+            m_contmgrs[pte->m_hWnd]->send_resize_msg_textview(hwnd);
         break;
     }
     default:
-        return m_contmgrs[m_mainhwnd]->send_msg_container(hwnd, msg, wParam, lParam);
+        TextEditor* pte = (TextEditor*)GetWindowLongPtr(hwnd, 0);
+        if (pte)
+            pte->WndProc(pte->m_contno, hwnd, msg, wParam, lParam);
+            //return m_contmgrs[pte->m_hWnd]->send_msg_container(hwnd, msg, wParam, lParam);
     }
 
     return 0;
@@ -425,7 +431,7 @@ LRESULT CALLBACK WebViewWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
         return 0;
 
     case WM_SIZE: {
-        m_contmgrs[m_mainhwnd]->send_resize_msg_webview(hWnd);
+        //m_contmgrs[m_mainhwnd]->send_resize_msg_webview(hWnd);
         break;
     }
     default:

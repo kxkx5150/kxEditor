@@ -56,8 +56,11 @@ class TextEditor {
     friend class EditView;
     friend class DocMgr;
 
-private:
+public:
     HWND m_hWnd;
+    int m_contno;
+
+private:
     Tabs* m_tabs = nullptr;
     CmdMgr* m_cmdmgr = nullptr;
 
@@ -102,7 +105,7 @@ public:
 public:
     TextEditor(HWND hwnd, CmdMgr* cmdmgr);
     ~TextEditor();
-    EditorContainer create_editor_container();
+    EditorContainer create_editor_container(int contno);
 
     void LoadRegSettings();
     void ApplyRegSettings();
