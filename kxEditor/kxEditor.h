@@ -11,9 +11,10 @@
 #include <wrl.h>
 #include "WebView2.h"
 
+TCHAR g_szAppName[] = APP_TITLE;
 WCHAR szTitle[MAX_LOADSTRING];
 WCHAR szWindowClass[MAX_LOADSTRING];
-TCHAR g_szAppName[] = APP_TITLE;
+TCHAR szWindowClass2[MAX_LOADSTRING] = { L"Submarine" };
 
 HINSTANCE hInst;
 HWND m_mainhwnd;
@@ -28,6 +29,8 @@ void InitOpenFile(HWND hwnd, int fmt);
 BOOL ShowOpenFileDlg(HWND hwnd, TCHAR* pstrFileName, TCHAR* pstrTitleName);
 BOOL DoOpenFile(HWND hwndMain, TCHAR* szFileName, TCHAR* szFileTitle);
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+LRESULT CALLBACK WndProc2(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+
 LRESULT CALLBACK WndCommandProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 LRESULT WINAPI TextViewWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK WebViewWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);

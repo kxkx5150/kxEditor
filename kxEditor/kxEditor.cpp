@@ -24,21 +24,30 @@ ATOM InitMainView(HINSTANCE hInstance)
     wcex.lpszClassName = szWindowClass;
     wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
-    return RegisterClassExW(&wcex);
+    WNDCLASSEXW wcex2;
+    wcex2.cbSize = sizeof(WNDCLASSEX);
+    wcex2.style = CS_OWNDC;
+    wcex2.lpfnWndProc = WndProc2;
+    wcex2.cbClsExtra = 0;
+    wcex2.cbWndExtra = 0;
+    wcex2.hInstance = hInstance;
+    wcex2.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_KXEDITOR));
+    wcex2.hCursor = LoadCursor(nullptr, IDC_ARROW);
+    wcex2.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+    wcex2.lpszMenuName = MAKEINTRESOURCEW(IDC_KEDITOR);
+    wcex2.lpszClassName = szWindowClass2;
+    wcex2.hIconSm = LoadIcon(wcex2.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+
+    return (RegisterClassEx(&wcex) && RegisterClassEx(&wcex2));
 }
-HWND CreateMainView(HINSTANCE hInstance, int nCmdShow)
+HWND CreateMainView(HINSTANCE hInstance, int nCmdShow, TCHAR* classname)
 {
-    hInst = hInstance;
-    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
+    HWND hWnd = CreateWindowW(classname, szTitle, WS_OVERLAPPEDWINDOW,
         CW_USEDEFAULT, 0, 1000, 800, nullptr, nullptr, hInstance, nullptr);
-
-    if (!hWnd) {
+    if (!hWnd)
         return FALSE;
-    }
-
     ShowWindow(hWnd, nCmdShow);
     UpdateWindow(hWnd);
-
     return hWnd;
 }
 BOOL InitTextView()
@@ -173,7 +182,6 @@ BOOL ShowOpenFileDlg(HWND hwnd, TCHAR* pstrFileName, TCHAR* pstrTitleName)
     ofn.Flags = OFN_EXPLORER | OFN_ENABLESIZING | OFN_ALLOWMULTISELECT | OFN_FILEMUSTEXIST | 0; //OFN_ENABLEHOOK			;
     return GetOpenFileName(&ofn);
 }
-
 BOOL DoOpenFile(HWND hwndMain, TCHAR* szFileName, TCHAR* szFileTitle)
 {
     m_contmgrs[hwndMain]->open_file_container(m_contmgrs[hwndMain]->m_active_cont_no, szFileName);
@@ -195,20 +203,6 @@ void check_node_nodules(TCHAR* path)
     }
     return;
 }
-
-int  main_loop(HINSTANCE hInstance, int nCmdShow)
-{
-    HWND hWnd = CreateMainView(hInstance, nCmdShow);
-    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_KEDITOR));
-    MSG msg;
-    while (GetMessage(&msg, nullptr, 0, 0)) {
-        if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg)) {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
-        }
-    }
-    return (int)msg.wParam;
-}
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hpins, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow)
 {
     hInst = hInstance;
@@ -218,7 +212,19 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hpins, _In_ L
     InitMainView(hInstance);
     InitTextView();
     InitWebView();
-    return main_loop(hInstance, nCmdShow);
+
+    CreateMainView(hInstance, nCmdShow, szWindowClass);
+    CreateMainView(hInstance, nCmdShow, szWindowClass2);
+
+    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_KEDITOR));
+    MSG msg;
+    while (GetMessage(&msg, nullptr, 0, 0)) {
+        if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg)) {
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+        }
+    }
+    return (int)msg.wParam;
 }
 void SetWindSize(HWND hwnd, int width, int height)
 {
@@ -237,9 +243,6 @@ void create_manager(HWND hWnd)
 }
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    if (!m_mainhwnd)
-        m_mainhwnd = hWnd;
-
     switch (message) {
 
     case WM_COMMAND: {
@@ -247,6 +250,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     }
     case WM_CREATE: {
+        m_mainhwnd = hWnd;
         create_manager(hWnd);
         break;
     }
@@ -269,7 +273,48 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_NOTIFY: {
         switch (((LPNMHDR)lParam)->code) {
         case TCN_SELCHANGE:
-            OnSelChange(((LPNMHDR)lParam)->hwndFrom);
+            //OnSelChange(((LPNMHDR)lParam)->hwndFrom);
+            break;
+        }
+    } break;
+    default:
+        return DefWindowProc(hWnd, message, wParam, lParam);
+    }
+
+    return 0;
+}
+LRESULT CALLBACK WndProc2(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    switch (message) {
+
+    case WM_COMMAND: {
+        WndCommandProc(hWnd, message, wParam, lParam);
+        break;
+    }
+    case WM_CREATE: {
+        m_mainhwnd = hWnd;
+        create_manager(hWnd);
+        break;
+    }
+    case WM_DESTROY: {
+        delete m_contmgrs[hWnd];
+        //PostQuitMessage(0);
+        break;
+    }
+    case WM_SIZE: {
+        int width = (short)LOWORD(lParam);
+        int height = (short)HIWORD(lParam);
+        SetWindSize(hWnd, width, height);
+        break;
+    }
+    case WM_SETFOCUS: {
+        m_contmgrs[hWnd]->set_focus_container(m_contmgrs[hWnd]->m_active_cont_no);
+        break;
+    }
+    case WM_NOTIFY: {
+        switch (((LPNMHDR)lParam)->code) {
+        case TCN_SELCHANGE:
+            //OnSelChange(((LPNMHDR)lParam)->hwndFrom);
             break;
         }
     } break;
