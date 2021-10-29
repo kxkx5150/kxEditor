@@ -195,17 +195,9 @@ void check_node_nodules(TCHAR* path)
     }
     return;
 }
-int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hpins, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow)
+
+int  main_loop(HINSTANCE hInstance, int nCmdShow)
 {
-    check_node_nodules((TCHAR*)L"..\\node\\node_modules\\express\\index.js");
-
-    hInst = hInstance;
-    LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-    LoadStringW(hInstance, IDC_KEDITOR, szWindowClass, MAX_LOADSTRING);
-    InitMainView(hInstance);
-    InitTextView();
-    InitWebView();
-
     HWND hWnd = CreateMainView(hInstance, nCmdShow);
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_KEDITOR));
     MSG msg;
@@ -215,8 +207,18 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hpins, _In_ L
             DispatchMessage(&msg);
         }
     }
-
     return (int)msg.wParam;
+}
+int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hpins, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow)
+{
+    hInst = hInstance;
+    check_node_nodules((TCHAR*)L"..\\node\\node_modules\\express\\index.js");
+    LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
+    LoadStringW(hInstance, IDC_KEDITOR, szWindowClass, MAX_LOADSTRING);
+    InitMainView(hInstance);
+    InitTextView();
+    InitWebView();
+    return main_loop(hInstance, nCmdShow);
 }
 void SetWindSize(HWND hwnd, int width, int height)
 {
