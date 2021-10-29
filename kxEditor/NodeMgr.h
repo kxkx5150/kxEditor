@@ -12,13 +12,8 @@ public:
     TCHAR* m_geturl;
     BOOL m_ws_receive = false;
 
-private:
-    CmdMgr* m_cmdmgr = nullptr;
-
-
-
 public:
-    NodeMgr(ContMgr* contmgr, CmdMgr* cmdmgr);
+    NodeMgr();
     ~NodeMgr();
 
     void init_node();

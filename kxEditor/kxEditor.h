@@ -13,9 +13,7 @@
 
 HINSTANCE hInst;
 extern NodeMgr* m_nodemgr = nullptr;
-
-ContMgr* m_contmgr = nullptr;
-CmdMgr* m_cmdmgr = nullptr;
+extern ContMgr* m_contmgr = nullptr;
 
 extern BOOL g_fShowScrollH = false;
 BOOL g_fShowTabControl = true;

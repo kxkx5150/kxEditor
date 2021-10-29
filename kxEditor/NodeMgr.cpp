@@ -14,6 +14,7 @@
 #include <crtdbg.h>
 
 extern NodeMgr* m_nodemgr;
+extern ContMgr* m_contmgr;
 
 using namespace web;
 using namespace web::http;
@@ -31,10 +32,9 @@ tcp::resolver resolver { ioc };
 websocket::stream<tcp::socket> b_ws { ioc };
 
 
-NodeMgr::NodeMgr(ContMgr* contmgr, CmdMgr* cmdmgr)
+NodeMgr::NodeMgr()
 {
     SetConsoleOutputCP(CP_UTF8);
-    m_cmdmgr = cmdmgr;
     init_node();
     Sleep(300);
     beast_ws_start();
@@ -230,7 +230,7 @@ int NodeMgr::beast_ws_write(nlohmann::json j)
     std::string str;
     auto buf = boost::asio::dynamic_buffer(str);
     b_ws.read(buf);
-    m_cmdmgr->exec(str);
+    m_contmgr->m_cmdmgr->exec(str);
 
     return EXIT_SUCCESS;
 }

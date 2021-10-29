@@ -14,18 +14,17 @@ class ContMgr {
 public:
     HWND m_mainhwnd;
     HWND m_hwndStatusbar;
+    CmdMgr* m_cmdmgr = nullptr;
 
     std::vector<EditorContainer> m_containers;
     int m_active_cont_no = 0;
 
-private:
-    CmdMgr* m_cmdmgr = nullptr;
 
 public:
     ContMgr();
     ~ContMgr();
 
-    void create_editor_container(HWND hwnd, CmdMgr* cmdmgr);
+    void create_editor_container(HWND hwnd);
     void delete_editor_container(int idx);
     void delete_all_editor_container();
     void set_focus_container(int idx);

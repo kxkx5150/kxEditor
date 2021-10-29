@@ -4,21 +4,21 @@
 
 ContMgr::ContMgr()
 {
+    m_cmdmgr = new CmdMgr(this);
 }
 ContMgr::~ContMgr()
 {
+    delete m_cmdmgr;
     delete_all_editor_container();
 }
-void ContMgr::create_editor_container(HWND hwnd, CmdMgr* cmdmgr)
+void ContMgr::create_editor_container(HWND hwnd)
 {
     if (!m_mainhwnd) {
         m_mainhwnd = hwnd;
-        m_cmdmgr = cmdmgr;
         m_hwndStatusbar = CreateStatusBar(hwnd);
-
     }
 
-    TextEditor* g_ptv = new TextEditor(hwnd, cmdmgr);
+    TextEditor* g_ptv = new TextEditor(hwnd, m_cmdmgr);
     EditorContainer econt = g_ptv->create_editor_container();
     m_containers.push_back(econt);
 }

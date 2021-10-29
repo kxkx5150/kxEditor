@@ -229,12 +229,10 @@ void OnSelChange(HWND hwnd)
 }
 void create_manager(HWND hWnd)
 {
-    m_contmgr = new ContMgr();
-    m_cmdmgr = new CmdMgr(m_contmgr);
     if (!m_nodemgr)
-        m_nodemgr = new NodeMgr(m_contmgr, m_cmdmgr);
-
-    m_contmgr->create_editor_container(hWnd, m_cmdmgr);
+        m_nodemgr = new NodeMgr();
+    m_contmgr = new ContMgr();
+    m_contmgr->create_editor_container(hWnd);
 }
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -253,7 +251,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_DESTROY: {
         delete m_contmgr;
         delete m_nodemgr;
-        delete m_cmdmgr;
         PostQuitMessage(0);
         break;
     }
