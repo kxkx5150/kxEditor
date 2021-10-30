@@ -43,7 +43,6 @@ void ContMgr::delete_all_editor_container()
 
 void ContMgr::set_focus_container(int idx)
 {
-    //set_active_container(idx);
     m_containers[idx].txteditor->set_focus();
 }
 void ContMgr::set_active_container(int idx)

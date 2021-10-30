@@ -234,14 +234,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message) {
 
-    case WM_COMMAND: {
-        WndCommandProc(hWnd, message, wParam, lParam);
-        break;
-    }
     case WM_CREATE: {
         create_manager(hWnd);
-        break;
-    }
+    } break;
+
     case WM_DESTROY: {
         delete m_contmgrs[hWnd];
         m_contmgrs.erase(hWnd);
@@ -249,17 +245,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             delete m_nodemgr;
             PostQuitMessage(0);
         }
-        break;
-    }
+    } break;
+
     case WM_SIZE: {
         SetWindSize(hWnd, (short)LOWORD(lParam), (short)HIWORD(lParam));
-        break;
-    }
+
+    } break;
+
     case WM_SETFOCUS: {
-        m_contmgrs[hWnd]->set_active_container(0);
         m_contmgrs[hWnd]->set_focus_container(m_contmgrs[hWnd]->m_active_cont_no);
-        break;
-    }
+    } break;
+
     case WM_NOTIFY: {
         switch (((LPNMHDR)lParam)->code) {
         case TCN_SELCHANGE:
@@ -267,6 +263,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             break;
         }
     } break;
+
+    case WM_COMMAND: {
+        WndCommandProc(hWnd, message, wParam, lParam);
+    } break;
+
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
@@ -316,11 +317,11 @@ LRESULT CALLBACK WndCommandProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 
     case ID_SPLIT_VERTICAL: {
         m_contmgrs[hWnd]->split_vertical();
-        //RECT rect;
-        //GetClientRect(hWnd, &rect);
-        //int width = rect.right - rect.left;
-        //int height = rect.bottom - rect.top;
-        //SetWindSize(hWnd, width, height);
+        RECT rect;
+        GetClientRect(hWnd, &rect);
+        int width = rect.right - rect.left;
+        int height = rect.bottom - rect.top;
+        SetWindSize(hWnd, width, height);
         return 0;
     }
 
