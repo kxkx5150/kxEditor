@@ -192,6 +192,7 @@ void check_node_nodules(TCHAR* path)
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hpins, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow)
 {
     hInst = hInstance;
+    lpCmd = nCmdShow;
     check_node_nodules((TCHAR*)L"..\\node\\node_modules\\express\\index.js");
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
     LoadStringW(hInstance, IDC_KEDITOR, szWindowClass, MAX_LOADSTRING);
@@ -199,8 +200,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hpins, _In_ L
     InitTextView();
     InitWebView();
 
-    CreateMainView(hInstance, nCmdShow, szWindowClass);
-    CreateMainView(hInstance, nCmdShow, szWindowClass);
+    CreateMainView(hInst, lpCmd, szWindowClass);
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_KEDITOR));
     MSG msg;
@@ -241,15 +241,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     }
     case WM_DESTROY: {
-        delete m_nodemgr;
         delete m_contmgrs[hWnd];
-        PostQuitMessage(0);
+        m_contmgrs.erase(hWnd);
+        if (m_contmgrs.size() < 1) {
+            delete m_nodemgr;
+            PostQuitMessage(0);
+        }
         break;
     }
     case WM_SIZE: {
-        int width = (short)LOWORD(lParam);
-        int height = (short)HIWORD(lParam);
-        SetWindSize(hWnd, width, height);
+        SetWindSize(hWnd, (short)LOWORD(lParam), (short)HIWORD(lParam));
         break;
     }
     case WM_SETFOCUS: {
@@ -300,6 +301,10 @@ LRESULT CALLBACK WndCommandProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
     case ID_FILE_NEW:
     case ID_FILE_OPEN:
         InitOpenFile(hWnd, LOWORD(wParam));
+        return 0;
+
+    case ID_FILE_NEWWINDOW:
+        CreateMainView(hInst, lpCmd, szWindowClass);
         return 0;
 
     case IDM_EXIT:
