@@ -14,15 +14,16 @@ TextEditor::~TextEditor()
 {
     DeleteObject(g_hFont);
 }
-EditorContainer TextEditor::create_editor_container(int contno)
+EditorContainer TextEditor::create_editor_container(ContMgr* contmgr, int contno)
 {
     m_hwnd_tabctrl = CreateTabControl(m_hWnd);
     m_hWnd_txtedit = CreateTextView(m_hwnd_tabctrl);
     m_hwnd_webview = CreateWebView(m_hwnd_tabctrl);
 
+    m_contmgr = contmgr;
     m_tabs = new Tabs();
     m_editview = new EditView(m_hWnd_txtedit, this, m_tabs);
-    m_webview = new WebView(m_hwnd_webview);
+    m_webview = new WebView(m_hWnd, m_hwnd_webview, contno);
 
     m_cmdmgr->set_hwnd(m_hWnd_txtedit);
     m_tabs->init_tabs(m_hWnd, m_hwnd_tabctrl, this, m_hWnd_txtedit, m_editview, m_hwnd_webview, m_webview);
@@ -99,6 +100,7 @@ LONG WINAPI TextEditor::WndProc(int contno, HWND hwnd, UINT msg, WPARAM wParam, 
         return OnMouseWheel((short)HIWORD(wParam));
 
     case WM_SETFOCUS:
+        m_contmgr->set_active_container(contno);
         return OnSetFocus((HWND)wParam);
 
     case WM_KILLFOCUS:

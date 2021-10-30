@@ -23,22 +23,7 @@ ATOM InitMainView(HINSTANCE hInstance)
     wcex.lpszMenuName = MAKEINTRESOURCEW(IDC_KEDITOR);
     wcex.lpszClassName = szWindowClass;
     wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
-
-    WNDCLASSEXW wcex2;
-    wcex2.cbSize = sizeof(WNDCLASSEX);
-    wcex2.style = CS_OWNDC;
-    wcex2.lpfnWndProc = WndProc2;
-    wcex2.cbClsExtra = 0;
-    wcex2.cbWndExtra = 0;
-    wcex2.hInstance = hInstance;
-    wcex2.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_KXEDITOR));
-    wcex2.hCursor = LoadCursor(nullptr, IDC_ARROW);
-    wcex2.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-    wcex2.lpszMenuName = MAKEINTRESOURCEW(IDC_KEDITOR);
-    wcex2.lpszClassName = szWindowClass2;
-    wcex2.hIconSm = LoadIcon(wcex2.hInstance, MAKEINTRESOURCE(IDI_SMALL));
-
-    return (RegisterClassEx(&wcex) && RegisterClassEx(&wcex2));
+    return (RegisterClassEx(&wcex));
 }
 HWND CreateMainView(HINSTANCE hInstance, int nCmdShow, TCHAR* classname)
 {
@@ -92,7 +77,7 @@ BOOL InitWebView()
     wcx.style = CS_DBLCLKS;
     wcx.lpfnWndProc = WebViewWndProc;
     wcx.cbClsExtra = 0;
-    wcx.cbWndExtra = 0;
+    wcx.cbWndExtra = sizeof(WebView*);
     wcx.hInstance = GetModuleHandle(0);
     wcx.hIcon = 0;
     wcx.hCursor = LoadCursor(nullptr, IDC_ARROW);
@@ -136,6 +121,7 @@ HWND CreateTabControl(HWND hWnd)
     //defEditWndProc = (WNDPROC)SetWindowLongPtr(hTab, GWLP_WNDPROC, (LONG_PTR)EditWindowProc);
     return hTab;
 }
+
 void SetWindowFileName(HWND hwnd, TCHAR* szFileName, BOOL fModified)
 {
     TCHAR ach[MAX_PATH + 4];
@@ -238,6 +224,7 @@ void create_manager(HWND hWnd)
 {
     if (!m_nodemgr)
         m_nodemgr = new NodeMgr();
+
     m_contmgrs[hWnd] = new ContMgr(m_nodemgr);
     m_contmgrs[hWnd]->create_editor_container(hWnd);
 }
@@ -250,7 +237,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     }
     case WM_CREATE: {
-        m_mainhwnd = hWnd;
         create_manager(hWnd);
         break;
     }
@@ -258,47 +244,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         delete m_nodemgr;
         delete m_contmgrs[hWnd];
         PostQuitMessage(0);
-        break;
-    }
-    case WM_SIZE: {
-        int width = (short)LOWORD(lParam);
-        int height = (short)HIWORD(lParam);
-        SetWindSize(hWnd, width, height);
-        break;
-    }
-    case WM_SETFOCUS: {
-        m_contmgrs[hWnd]->set_focus_container(m_contmgrs[hWnd]->m_active_cont_no);
-        break;
-    }
-    case WM_NOTIFY: {
-        switch (((LPNMHDR)lParam)->code) {
-        case TCN_SELCHANGE:
-            OnSelChange(hWnd, ((LPNMHDR)lParam)->hwndFrom);
-            break;
-        }
-    } break;
-    default:
-        return DefWindowProc(hWnd, message, wParam, lParam);
-    }
-
-    return 0;
-}
-LRESULT CALLBACK WndProc2(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-    switch (message) {
-
-    case WM_COMMAND: {
-        WndCommandProc(hWnd, message, wParam, lParam);
-        break;
-    }
-    case WM_CREATE: {
-        m_mainhwnd = hWnd;
-        create_manager(hWnd);
-        break;
-    }
-    case WM_DESTROY: {
-        delete m_contmgrs[hWnd];
-        //PostQuitMessage(0);
         break;
     }
     case WM_SIZE: {
@@ -393,8 +338,9 @@ LRESULT WINAPI TextViewWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
 
     case WM_SIZE: {
         TextEditor* pte = (TextEditor*)GetWindowLongPtr(hwnd, 0);
-        if (pte)
+        if (pte) {
             pte->m_tabs->m_active_tab->resize_textview();
+        }
         break;
     }
     default:
@@ -409,28 +355,40 @@ LRESULT CALLBACK WebViewWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 {
     switch (message) {
 
-    case WM_GETMINMAXINFO: {
-
-    } break;
-    case WM_DPICHANGED: {
-
-    } break;
-    case WM_CLOSE: {
-
-    } break;
-    case WM_PAINT: {
-        PAINTSTRUCT ps;
-        HDC hdc = BeginPaint(hWnd, &ps);
-        EndPaint(hWnd, &ps);
-    } break;
     case WM_NCCREATE:
         return TRUE;
 
     case WM_NCDESTROY:
         return 0;
 
+    case WM_GETMINMAXINFO: {
+
+    } break;
+
+    case WM_DPICHANGED: {
+
+    } break;
+
+    case WM_CLOSE: {
+
+    } break;
+
+    case WM_PAINT: {
+        PAINTSTRUCT ps;
+        HDC hdc = BeginPaint(hWnd, &ps);
+        EndPaint(hWnd, &ps);
+    } break;
+
+    case WM_SETFOCUS: {
+        OutputDebugString(L"focus\n");
+        //WebView* wbv = (WebView*)GetWindowLongPtr(hWnd, 0);
+        //m_contmgrs[hWnd]->set_focus_container(m_contmgrs[hWnd]->m_active_cont_no);
+        break;
+    }
     case WM_SIZE: {
-        //m_contmgrs[m_mainhwnd]->send_resize_msg_webview(hWnd);
+        WebView* wbv = (WebView*)GetWindowLongPtr(hWnd, 0);
+        if (wbv)
+            m_contmgrs[wbv->m_hWnd]->send_resize_msg_webview(hWnd);
         break;
     }
     default:

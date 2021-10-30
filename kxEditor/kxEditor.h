@@ -9,16 +9,14 @@
 #include <wil/com.h>
 #include <windows.h>
 #include <wrl.h>
+#include "WebView.h"
 #include "WebView2.h"
 
 TCHAR g_szAppName[] = APP_TITLE;
 WCHAR szTitle[MAX_LOADSTRING];
 WCHAR szWindowClass[MAX_LOADSTRING];
-TCHAR szWindowClass2[MAX_LOADSTRING] = { L"Submarine" };
 
 HINSTANCE hInst;
-HWND m_mainhwnd;
-
 NodeMgr* m_nodemgr = nullptr;
 std::map<HWND, ContMgr*> m_contmgrs;
 

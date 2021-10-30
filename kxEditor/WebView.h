@@ -55,12 +55,15 @@ using namespace Microsoft::WRL;
 class WebView {
 
 public:
+    HWND m_hWnd = nullptr;
+    HWND m_hwnd_webview = nullptr;
+    int m_contno;
+
     static const int c_uiBarHeight = 70;
     static const int c_optionsDropdownHeight = 108;
     static const int c_optionsDropdownWidth = 200;
 
 protected:
-    HWND m_hWnd = nullptr;
     HINSTANCE m_hInst = nullptr;
     LPCWSTR m_url = L"";
 
@@ -102,7 +105,7 @@ protected:
     std::wstring GetFilePathAsURI(std::wstring fullPath);
 
 public:
-    WebView(HWND hWnd);
+    WebView(HWND mainhWnd,HWND webvhWnd, int contno);
     ~WebView();
     void create_webview(int tabid, LPCWSTR url, BOOL showbar = true);
     HRESULT SwitchToTab(size_t tabId, int wtabid);

@@ -61,8 +61,9 @@ public:
     HWND m_hwnd_webview;
     HWND m_hwnd_tabctrl;
 
-    Tabs* m_tabs = nullptr;
+    ContMgr* m_contmgr = nullptr;
     CmdMgr* m_cmdmgr = nullptr;
+    Tabs* m_tabs = nullptr;
     EditView* m_editview = nullptr;
     WebView* m_webview = nullptr;
 
@@ -102,7 +103,7 @@ public:
 public:
     TextEditor(HWND hwnd, CmdMgr* cmdmgr);
     ~TextEditor();
-    EditorContainer create_editor_container(int contno);
+    EditorContainer create_editor_container(ContMgr* contmgr, int contno);
 
     void LoadRegSettings();
     void ApplyRegSettings();
