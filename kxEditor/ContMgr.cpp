@@ -128,9 +128,5 @@ void ContMgr::on_select_tab(HWND hwnd)
 void ContMgr::split_vertical()
 {
     _RPTN(_CRT_WARN, "active cont : %d\n", m_active_cont_no);
-    //create_editor_container(m_mainhwnd, m_cmdmgr);
-
-    //for (int i = 0; i < m_containers.size(); i++) {
-    //    InvalidateRect(m_containers[i].prnthwnd, NULL, FALSE);
-    //}
+    create_editor_container(m_mainhwnd);
 }

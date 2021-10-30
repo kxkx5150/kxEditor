@@ -249,7 +249,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     case WM_SIZE: {
         SetWindSize(hWnd, (short)LOWORD(lParam), (short)HIWORD(lParam));
-
     } break;
 
     case WM_SETFOCUS: {
@@ -317,6 +316,7 @@ LRESULT CALLBACK WndCommandProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 
     case ID_SPLIT_VERTICAL: {
         m_contmgrs[hWnd]->split_vertical();
+
         RECT rect;
         GetClientRect(hWnd, &rect);
         int width = rect.right - rect.left;
