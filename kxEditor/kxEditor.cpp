@@ -381,7 +381,6 @@ LRESULT CALLBACK WebViewWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
     } break;
 
     case WM_SETFOCUS: {
-        //OutputDebugString(L"focus\n");
         //WebView* wbv = (WebView*)GetWindowLongPtr(hWnd, 0);
         //m_contmgrs[hWnd]->set_focus_container(m_contmgrs[hWnd]->m_active_cont_no);
         break;
