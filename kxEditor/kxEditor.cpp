@@ -108,6 +108,7 @@ HWND CreateTabControl(HWND hWnd)
     INITCOMMONCONTROLSEX iccx;
     iccx.dwSize = sizeof(INITCOMMONCONTROLSEX);
     iccx.dwICC = ICC_TAB_CLASSES;
+
     if (!InitCommonControlsEx(&iccx))
         return FALSE;
 
@@ -120,7 +121,8 @@ HWND CreateTabControl(HWND hWnd)
 
     SendMessage(hTab, WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT), 0);
     SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)hTab);
-    //defEditWndProc = (WNDPROC)SetWindowLongPtr(hTab, GWLP_WNDPROC, (LONG_PTR)EditWindowProc);
+    SetWindowLongPtr(hTab, GWLP_USERDATA, (LONG_PTR)hWnd);
+    defEditWndProcs[hTab] = (WNDPROC)SetWindowLongPtr(hTab, GWLP_WNDPROC, (LONG_PTR)EditWindowProc);
     return hTab;
 }
 
@@ -218,10 +220,6 @@ void SetWindSize(HWND hwnd, int width, int height)
 {
     m_contmgrs[hwnd]->send_resize_msg_containers(width, height, 0, 0);
 }
-void OnSelChange(HWND mainhwnd, HWND hwnd)
-{
-    m_contmgrs[mainhwnd]->on_select_tab(hwnd);
-}
 void create_manager(HWND hWnd)
 {
     if (!m_nodemgr)
@@ -258,7 +256,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_NOTIFY: {
         switch (((LPNMHDR)lParam)->code) {
         case TCN_SELCHANGE:
-            OnSelChange(hWnd, ((LPNMHDR)lParam)->hwndFrom);
+            m_contmgrs[hWnd]->on_select_tab(((LPNMHDR)lParam)->hwndFrom);
             break;
         }
     } break;
@@ -400,10 +398,20 @@ LRESULT CALLBACK WebViewWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 }
 LRESULT CALLBACK EditWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    //switch (message) {
-    //default:
-    //    return CallWindowProc(defEditWndProc, hWnd, message, wParam, lParam);
-    //}
+    switch (message) {
+
+    case WM_PAINT: {
+        return CallWindowProc(defEditWndProcs[hWnd], hWnd, message, wParam, lParam);
+
+    } break;
+    case WM_SETFOCUS: {
+        HWND mhwnd = (HWND)GetWindowLongPtr(hWnd, GWLP_USERDATA);
+        m_contmgrs[mhwnd]->check_active_tabctrl(hWnd);
+
+    } break;
+    default:
+        return CallWindowProc(defEditWndProcs[hWnd], hWnd, message, wParam, lParam);
+    }
 
     return 0;
 }

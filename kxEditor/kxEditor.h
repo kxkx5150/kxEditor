@@ -20,6 +20,7 @@ HINSTANCE hInst;
 int lpCmd;
 NodeMgr* m_nodemgr = nullptr;
 std::map<HWND, ContMgr*> m_contmgrs;
+std::map<HWND, WNDPROC> defEditWndProcs;
 
 extern BOOL g_fShowScrollH = false;
 extern BOOL g_fShowTabControl = true;

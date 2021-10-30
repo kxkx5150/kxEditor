@@ -22,6 +22,7 @@ class ContMgr;
 class WebView;
 
 struct EditorContainer {
+    int contno;
     HWND prnthwnd;
     HWND tabhwnd;
     HWND txthwnd;

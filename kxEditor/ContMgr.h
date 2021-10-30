@@ -41,6 +41,7 @@ public:
     void resize_statusbar(int width, int height);
 
     void on_select_tab(HWND hwnd);
+    void check_active_tabctrl(HWND hwnd);
 
     void change_webview();
     void change_cmdview();

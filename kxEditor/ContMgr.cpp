@@ -110,6 +110,7 @@ void ContMgr::send_resize_msg_textview(HWND hwnd)
     for (int i = 0; i < m_containers.size(); i++) {
         if (hwnd == m_containers[i].txthwnd) {
             m_containers[i].tabs->m_active_tab->resize_textview();
+            break;
         }
     }
 }
@@ -118,15 +119,25 @@ void ContMgr::send_resize_msg_webview(HWND hwnd)
     for (int i = 0; i < m_containers.size(); i++) {
         if (hwnd == m_containers[i].webvhwnd) {
             m_containers[i].tabs->m_active_tab->resize_webview();
+            break;
         }
     }
 }
 void ContMgr::on_select_tab(HWND hwnd)
 {
+    check_active_tabctrl(hwnd);
     m_containers[m_active_cont_no].tabs->on_select_tab(hwnd);
+}
+void ContMgr::check_active_tabctrl(HWND hwnd)
+{
+    for (int i = 0; i < m_containers.size(); i++) {
+        if (hwnd == m_containers[i].tabhwnd) {
+            set_active_container(i);
+            break;
+        }
+    }
 }
 void ContMgr::split_vertical()
 {
-    _RPTN(_CRT_WARN, "active cont : %d\n", m_active_cont_no);
     create_editor_container(m_mainhwnd);
 }

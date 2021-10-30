@@ -30,6 +30,7 @@ EditorContainer TextEditor::create_editor_container(ContMgr* contmgr, int contno
     m_tabs->init_tabs(m_hWnd, m_hwnd_tabctrl, this, m_hWnd_txtedit, m_editview, m_hwnd_webview, m_webview);
 
     EditorContainer econt;
+    econt.contno = contno;
     econt.prnthwnd = m_hWnd;
     econt.tabhwnd = m_hwnd_tabctrl;
     econt.txthwnd = m_hWnd_txtedit;
