@@ -20,8 +20,10 @@ void ContMgr::create_editor_container(HWND hwnd)
     }
 
     TextEditor* g_ptv = new TextEditor(hwnd, m_cmdmgr);
-    EditorContainer econt = g_ptv->create_editor_container();
+    EditorContainer econt = g_ptv->create_editor_container(this, m_containers.size());
     m_containers.push_back(econt);
+    SetWindowLongPtr(econt.txthwnd, 0, (LONG)g_ptv);
+    SetWindowLongPtr(econt.webvhwnd, 0, (LONG)econt.webview);
 }
 void ContMgr::delete_editor_container(int idx)
 {
@@ -37,10 +39,21 @@ void ContMgr::delete_all_editor_container()
     }
     m_containers.clear();
 }
+
+
 void ContMgr::set_focus_container(int idx)
 {
+    //set_active_container(idx);
     m_containers[idx].txteditor->set_focus();
 }
+void ContMgr::set_active_container(int idx)
+{
+    _RPTN(_CRT_WARN, "active cont no :%d\n", idx);
+    m_active_cont_no = idx;
+}
+
+
+
 void ContMgr::open_file_container(int idx, TCHAR* szFileName)
 {
     m_containers[idx].txteditor->OpenFile(szFileName);
@@ -59,22 +72,9 @@ void ContMgr::change_txtview()
 {
     m_containers[m_active_cont_no].tabs->m_active_tab->change_txtview();
 }
-LONG ContMgr::send_msg_container(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-    BOOL focusflg = false;
-    if (msg == WM_SETFOCUS)
-        focusflg = true;
 
-    for (int i = 0; i < m_containers.size(); i++) {
-        if (hwnd == m_containers[i].txthwnd) {
-            if (focusflg)
-                m_active_cont_no = i;
-            return m_containers[i].txteditor->WndProc(i, hwnd, msg, wParam, lParam);
-        }
-    }
 
-    return 0;
-}
+
 void ContMgr::resize_statusbar(int width, int height)
 {
     if (!m_hwndStatusbar)

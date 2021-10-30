@@ -3,8 +3,8 @@
 
 TextEditor::TextEditor(HWND hwnd, CmdMgr* cmdmgr)
 {
-    m_cmdmgr = cmdmgr;
     m_hWnd = hwnd;
+    m_cmdmgr = cmdmgr;
     memset(m_uspFontList, 0, sizeof(m_uspFontList));
     LoadRegSettings();
     ApplyRegSettings();
@@ -14,16 +14,18 @@ TextEditor::~TextEditor()
 {
     DeleteObject(g_hFont);
 }
-EditorContainer TextEditor::create_editor_container()
+EditorContainer TextEditor::create_editor_container(ContMgr* contmgr, int contno)
 {
     m_hwnd_tabctrl = CreateTabControl(m_hWnd);
     m_hWnd_txtedit = CreateTextView(m_hwnd_tabctrl);
     m_hwnd_webview = CreateWebView(m_hwnd_tabctrl);
 
+    m_contno = contno;
+    m_contmgr = contmgr;
     m_tabs = new Tabs();
     m_editview = new EditView(m_hWnd_txtedit, this, m_tabs);
-    m_webview = new WebView(m_hwnd_webview);
-    
+    m_webview = new WebView(m_hWnd, m_hwnd_webview, contno);
+
     m_cmdmgr->set_hwnd(m_hWnd_txtedit);
     m_tabs->init_tabs(m_hWnd, m_hwnd_tabctrl, this, m_hWnd_txtedit, m_editview, m_hwnd_webview, m_webview);
 
@@ -73,9 +75,10 @@ LONG WINAPI TextEditor::WndProc(int contno, HWND hwnd, UINT msg, WPARAM wParam, 
     case WM_SETFONT:
         return OnSetFont();
 
-    case WM_SIZE:
+    case WM_SIZE: {
+        m_tabs->m_active_tab->resize_textview();
         return OnSize(wParam, LOWORD(lParam), HIWORD(lParam));
-
+    }
     case TXM_OPENFILE:
         return OpenFile((TCHAR*)lParam);
 
@@ -98,12 +101,15 @@ LONG WINAPI TextEditor::WndProc(int contno, HWND hwnd, UINT msg, WPARAM wParam, 
         return OnMouseWheel((short)HIWORD(wParam));
 
     case WM_SETFOCUS:
+        m_contmgr->set_active_container(contno);
         return OnSetFocus((HWND)wParam);
 
     case WM_KILLFOCUS:
         return OnKillFocus((HWND)wParam);
 
     case WM_LBUTTONDOWN:
+        OutputDebugString(L"WM_LBUTTONDOWN\n");
+
         return OnLButtonDown(wParam, (short)LOWORD(lParam), (short)HIWORD(lParam));
 
     case WM_LBUTTONUP:
@@ -119,10 +125,10 @@ LONG WINAPI TextEditor::WndProc(int contno, HWND hwnd, UINT msg, WPARAM wParam, 
         //    return OnPaste();
 
     case WM_CHAR:
-        return m_cmdmgr->OnChar(contno,wParam, lParam);
+        return m_cmdmgr->OnChar(contno, wParam, lParam);
 
     case WM_KEYDOWN:
-        return m_cmdmgr->on_keydown(contno,wParam, lParam);
+        return m_cmdmgr->on_keydown(contno, wParam, lParam);
     }
 
     return DefWindowProc(hwnd, msg, wParam, lParam);

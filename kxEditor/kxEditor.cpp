@@ -8,6 +8,8 @@
 #pragma comment(lib, "comctl32.lib")
 #pragma comment(lib, "Shlwapi.lib")
 
+class TextEditor;
+
 ATOM InitMainView(HINSTANCE hInstance)
 {
     WNDCLASSEXW wcex;
@@ -23,22 +25,16 @@ ATOM InitMainView(HINSTANCE hInstance)
     wcex.lpszMenuName = MAKEINTRESOURCEW(IDC_KEDITOR);
     wcex.lpszClassName = szWindowClass;
     wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
-
-    return RegisterClassExW(&wcex);
+    return (RegisterClassEx(&wcex));
 }
-HWND CreateMainView(HINSTANCE hInstance, int nCmdShow)
+HWND CreateMainView(HINSTANCE hInstance, int nCmdShow, TCHAR* classname)
 {
-    hInst = hInstance;
-    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
+    HWND hWnd = CreateWindowW(classname, szTitle, WS_OVERLAPPEDWINDOW,
         CW_USEDEFAULT, 0, 1000, 800, nullptr, nullptr, hInstance, nullptr);
-
-    if (!hWnd) {
+    if (!hWnd)
         return FALSE;
-    }
-
     ShowWindow(hWnd, nCmdShow);
     UpdateWindow(hWnd);
-
     return hWnd;
 }
 BOOL InitTextView()
@@ -48,7 +44,7 @@ BOOL InitTextView()
     wcx.style = CS_DBLCLKS;
     wcx.lpfnWndProc = TextViewWndProc;
     wcx.cbClsExtra = 0;
-    wcx.cbWndExtra = 0;
+    wcx.cbWndExtra = sizeof(TextEditor*);
     wcx.hInstance = GetModuleHandle(0);
     wcx.hIcon = 0;
     wcx.hCursor = LoadCursor(NULL, IDC_IBEAM);
@@ -83,7 +79,7 @@ BOOL InitWebView()
     wcx.style = CS_DBLCLKS;
     wcx.lpfnWndProc = WebViewWndProc;
     wcx.cbClsExtra = 0;
-    wcx.cbWndExtra = 0;
+    wcx.cbWndExtra = sizeof(WebView*);
     wcx.hInstance = GetModuleHandle(0);
     wcx.hIcon = 0;
     wcx.hCursor = LoadCursor(nullptr, IDC_ARROW);
@@ -127,6 +123,7 @@ HWND CreateTabControl(HWND hWnd)
     //defEditWndProc = (WNDPROC)SetWindowLongPtr(hTab, GWLP_WNDPROC, (LONG_PTR)EditWindowProc);
     return hTab;
 }
+
 void SetWindowFileName(HWND hwnd, TCHAR* szFileName, BOOL fModified)
 {
     TCHAR ach[MAX_PATH + 4];
@@ -173,7 +170,6 @@ BOOL ShowOpenFileDlg(HWND hwnd, TCHAR* pstrFileName, TCHAR* pstrTitleName)
     ofn.Flags = OFN_EXPLORER | OFN_ENABLESIZING | OFN_ALLOWMULTISELECT | OFN_FILEMUSTEXIST | 0; //OFN_ENABLEHOOK			;
     return GetOpenFileName(&ofn);
 }
-
 BOOL DoOpenFile(HWND hwndMain, TCHAR* szFileName, TCHAR* szFileTitle)
 {
     m_contmgrs[hwndMain]->open_file_container(m_contmgrs[hwndMain]->m_active_cont_no, szFileName);
@@ -195,10 +191,19 @@ void check_node_nodules(TCHAR* path)
     }
     return;
 }
-
-int  main_loop(HINSTANCE hInstance, int nCmdShow)
+int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hpins, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow)
 {
-    HWND hWnd = CreateMainView(hInstance, nCmdShow);
+    hInst = hInstance;
+    lpCmd = nCmdShow;
+    check_node_nodules((TCHAR*)L"..\\node\\node_modules\\express\\index.js");
+    LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
+    LoadStringW(hInstance, IDC_KEDITOR, szWindowClass, MAX_LOADSTRING);
+    InitMainView(hInstance);
+    InitTextView();
+    InitWebView();
+
+    CreateMainView(hInst, lpCmd, szWindowClass);
+
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_KEDITOR));
     MSG msg;
     while (GetMessage(&msg, nullptr, 0, 0)) {
@@ -209,37 +214,24 @@ int  main_loop(HINSTANCE hInstance, int nCmdShow)
     }
     return (int)msg.wParam;
 }
-int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hpins, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow)
-{
-    hInst = hInstance;
-    check_node_nodules((TCHAR*)L"..\\node\\node_modules\\express\\index.js");
-    LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-    LoadStringW(hInstance, IDC_KEDITOR, szWindowClass, MAX_LOADSTRING);
-    InitMainView(hInstance);
-    InitTextView();
-    InitWebView();
-    return main_loop(hInstance, nCmdShow);
-}
 void SetWindSize(HWND hwnd, int width, int height)
 {
     m_contmgrs[hwnd]->send_resize_msg_containers(width, height, 0, 0);
 }
-void OnSelChange(HWND hwnd)
+void OnSelChange(HWND mainhwnd, HWND hwnd)
 {
-    m_contmgrs[m_mainhwnd]->on_select_tab(hwnd);
+    m_contmgrs[mainhwnd]->on_select_tab(hwnd);
 }
 void create_manager(HWND hWnd)
 {
     if (!m_nodemgr)
         m_nodemgr = new NodeMgr();
+
     m_contmgrs[hWnd] = new ContMgr(m_nodemgr);
     m_contmgrs[hWnd]->create_editor_container(hWnd);
 }
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    if (!m_mainhwnd)
-        m_mainhwnd = hWnd;
-
     switch (message) {
 
     case WM_COMMAND: {
@@ -251,25 +243,27 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     }
     case WM_DESTROY: {
-        delete m_nodemgr;
         delete m_contmgrs[hWnd];
-        PostQuitMessage(0);
+        m_contmgrs.erase(hWnd);
+        if (m_contmgrs.size() < 1) {
+            delete m_nodemgr;
+            PostQuitMessage(0);
+        }
         break;
     }
     case WM_SIZE: {
-        int width = (short)LOWORD(lParam);
-        int height = (short)HIWORD(lParam);
-        SetWindSize(hWnd, width, height);
+        SetWindSize(hWnd, (short)LOWORD(lParam), (short)HIWORD(lParam));
         break;
     }
     case WM_SETFOCUS: {
+        m_contmgrs[hWnd]->set_active_container(0);
         m_contmgrs[hWnd]->set_focus_container(m_contmgrs[hWnd]->m_active_cont_no);
         break;
     }
     case WM_NOTIFY: {
         switch (((LPNMHDR)lParam)->code) {
         case TCN_SELCHANGE:
-            OnSelChange(((LPNMHDR)lParam)->hwndFrom);
+            OnSelChange(hWnd, ((LPNMHDR)lParam)->hwndFrom);
             break;
         }
     } break;
@@ -312,6 +306,10 @@ LRESULT CALLBACK WndCommandProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
         InitOpenFile(hWnd, LOWORD(wParam));
         return 0;
 
+    case ID_FILE_NEWWINDOW:
+        CreateMainView(hInst, lpCmd, szWindowClass);
+        return 0;
+
     case IDM_EXIT:
         DestroyWindow(hWnd);
         return 0;
@@ -345,12 +343,11 @@ LRESULT WINAPI TextViewWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
 
     case WM_NCDESTROY:
         break;
-    case WM_SIZE: {
-        m_contmgrs[m_mainhwnd]->send_resize_msg_textview(hwnd);
-        break;
-    }
+
     default:
-        return m_contmgrs[m_mainhwnd]->send_msg_container(hwnd, msg, wParam, lParam);
+        TextEditor* pte = (TextEditor*)GetWindowLongPtr(hwnd, 0);
+        if (pte)
+            return pte->WndProc(pte->m_contno, hwnd, msg, wParam, lParam);
     }
 
     return 0;
@@ -359,28 +356,39 @@ LRESULT CALLBACK WebViewWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 {
     switch (message) {
 
-    case WM_GETMINMAXINFO: {
-
-    } break;
-    case WM_DPICHANGED: {
-
-    } break;
-    case WM_CLOSE: {
-
-    } break;
-    case WM_PAINT: {
-        PAINTSTRUCT ps;
-        HDC hdc = BeginPaint(hWnd, &ps);
-        EndPaint(hWnd, &ps);
-    } break;
     case WM_NCCREATE:
         return TRUE;
 
     case WM_NCDESTROY:
         return 0;
 
+    case WM_GETMINMAXINFO: {
+
+    } break;
+
+    case WM_DPICHANGED: {
+
+    } break;
+
+    case WM_CLOSE: {
+
+    } break;
+
+    case WM_PAINT: {
+        PAINTSTRUCT ps;
+        HDC hdc = BeginPaint(hWnd, &ps);
+        EndPaint(hWnd, &ps);
+    } break;
+
+    case WM_SETFOCUS: {
+        //WebView* wbv = (WebView*)GetWindowLongPtr(hWnd, 0);
+        //m_contmgrs[hWnd]->set_focus_container(m_contmgrs[hWnd]->m_active_cont_no);
+        break;
+    }
     case WM_SIZE: {
-        m_contmgrs[m_mainhwnd]->send_resize_msg_webview(hWnd);
+        WebView* wbv = (WebView*)GetWindowLongPtr(hWnd, 0);
+        if (wbv)
+            m_contmgrs[wbv->m_hWnd]->send_resize_msg_webview(hWnd);
         break;
     }
     default:

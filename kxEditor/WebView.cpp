@@ -3,11 +3,14 @@
 #include <Urlmon.h>
 #pragma comment(lib, "Urlmon.lib")
 
-WebView::WebView(HWND hWnd)
+WebView::WebView(HWND mainhWnd, HWND webvhWnd, int contno)
 {
-    m_hWnd = hWnd;
+    m_hWnd = mainhWnd;
+    m_hwnd_webview = webvhWnd;
+    m_contno = contno;
+
     m_hInst = GetModuleHandle(0);
-    SetWindowLongPtr(m_hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
+    SetWindowLongPtr(m_hwnd_webview, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
 }
 WebView::~WebView()
 {
@@ -16,7 +19,7 @@ HRESULT WebView::ResizeUIWebViews(int tabid)
 {
     if (m_controlsWebViews[tabid] != nullptr) {
         RECT bounds;
-        GetClientRect(m_hWnd, &bounds);
+        GetClientRect(m_hwnd_webview, &bounds);
 
         if (m_showbar_tabs[tabid]) {
             bounds.bottom = bounds.top + GetDPIAwareBound(c_uiBarHeight);
@@ -29,7 +32,7 @@ HRESULT WebView::ResizeUIWebViews(int tabid)
 
     if (m_optionsWebViews[tabid] != nullptr) {
         RECT bounds;
-        GetClientRect(m_hWnd, &bounds);
+        GetClientRect(m_hwnd_webview, &bounds);
 
         if (m_showbar_tabs[tabid]) {
             bounds.top = GetDPIAwareBound(c_uiBarHeight);
@@ -45,7 +48,7 @@ HRESULT WebView::ResizeUIWebViews(int tabid)
     if (m_tabsmap[tabid].find(m_activeTabIds[tabid]) != m_tabsmap[tabid].end())
         m_tabsmap[tabid].at(m_activeTabIds[tabid])->ResizeWebView(m_showbar_tabs[tabid]);
 
-    HWND wvWindow = GetWindow(m_hWnd, GW_CHILD);
+    HWND wvWindow = GetWindow(m_hwnd_webview, GW_CHILD);
     while (wvWindow != nullptr) {
         UpdateWindow(wvWindow);
         wvWindow = GetWindow(wvWindow, GW_HWNDNEXT);
@@ -57,14 +60,14 @@ HRESULT WebView::hide_webview(int tabid)
 {
     if (m_controlsWebViews[tabid] != nullptr) {
         RECT bounds;
-        GetClientRect(m_hWnd, &bounds);
+        GetClientRect(m_hwnd_webview, &bounds);
         bounds.bottom = 0;
         RETURN_IF_FAILED(m_controlsControllers[tabid]->put_Bounds(bounds));
     }
 
     if (m_optionsWebViews[tabid] != nullptr) {
         RECT bounds;
-        GetClientRect(m_hWnd, &bounds);
+        GetClientRect(m_hwnd_webview, &bounds);
         bounds.top = 0;
         bounds.bottom = 0;
         RETURN_IF_FAILED(m_optionsControllers[tabid]->put_Bounds(bounds));
@@ -73,7 +76,7 @@ HRESULT WebView::hide_webview(int tabid)
     if (m_tabsmap[tabid].find(m_activeTabIds[tabid]) != m_tabsmap[tabid].end())
         m_tabsmap[tabid].at(m_activeTabIds[tabid])->HideWebView();
 
-    HWND wvWindow = GetWindow(m_hWnd, GW_CHILD);
+    HWND wvWindow = GetWindow(m_hwnd_webview, GW_CHILD);
     while (wvWindow != nullptr) {
         UpdateWindow(wvWindow);
         wvWindow = GetWindow(wvWindow, GW_HWNDNEXT);
@@ -113,7 +116,7 @@ HRESULT WebView::InitUIWebViews(int tabid)
 
 HRESULT WebView::CreateBrowserControlsWebView(int tabid)
 {
-    return m_uiEnvs[tabid]->CreateCoreWebView2Controller(m_hWnd,
+    return m_uiEnvs[tabid]->CreateCoreWebView2Controller(m_hwnd_webview,
         Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>([this, tabid](HRESULT result, ICoreWebView2Controller* host) -> HRESULT {
             if (!SUCCEEDED(result))
                 return result;
@@ -146,7 +149,7 @@ HRESULT WebView::CreateBrowserControlsWebView(int tabid)
 
 HRESULT WebView::CreateBrowserOptionsWebView(int tabid)
 {
-    return m_uiEnvs[tabid]->CreateCoreWebView2Controller(m_hWnd,
+    return m_uiEnvs[tabid]->CreateCoreWebView2Controller(m_hwnd_webview,
         Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>([this, tabid](HRESULT result, ICoreWebView2Controller* host) -> HRESULT {
             if (!SUCCEEDED(result)) {
                 return result;
@@ -209,7 +212,7 @@ void WebView::SetUIMessageBroker(int tabid)
             case MG_CREATE_TAB: {
                 size_t id = args.at(L"tabId").as_number().to_uint32();
                 bool shouldBeActive = args.at(L"active").as_bool();
-                std::unique_ptr<WebTab> newTab = WebTab::CreateNewTab(m_hWnd, tabid, m_contentEnvs[tabid].get(), id, shouldBeActive, m_url);
+                std::unique_ptr<WebTab> newTab = WebTab::CreateNewTab(m_hwnd_webview, tabid, m_contentEnvs[tabid].get(), id, shouldBeActive, m_url);
                 std::map<size_t, std::unique_ptr<WebTab>>::iterator it = m_tabsmap[tabid].find(id);
                 if (it == m_tabsmap[tabid].end()) {
                     m_tabsmap[tabid].insert(std::pair<size_t, std::unique_ptr<WebTab>>(id, std::move(newTab)));
@@ -267,7 +270,7 @@ void WebView::SetUIMessageBroker(int tabid)
 
             } break;
             case MG_CLOSE_WINDOW: {
-                DestroyWindow(m_hWnd);
+                DestroyWindow(m_hwnd_webview);
 
             } break;
             case MG_SHOW_OPTIONS: {
@@ -596,8 +599,8 @@ void WebView::UpdateMinWindowSize()
     RECT clientRect;
     RECT windowRect;
 
-    GetClientRect(m_hWnd, &clientRect);
-    GetWindowRect(m_hWnd, &windowRect);
+    GetClientRect(m_hwnd_webview, &clientRect);
+    GetWindowRect(m_hwnd_webview, &windowRect);
 
     int bordersWidth = (windowRect.right - windowRect.left) - clientRect.right;
     int bordersHeight = (windowRect.bottom - windowRect.top) - clientRect.bottom;
@@ -620,7 +623,7 @@ void WebView::CheckFailure(HRESULT hr, LPCWSTR errorMessage)
 }
 int WebView::GetDPIAwareBound(int bound)
 {
-    return (bound * GetDpiForWindow(m_hWnd) / DEFAULT_DPI);
+    return (bound * GetDpiForWindow(m_hwnd_webview) / DEFAULT_DPI);
 }
 std::wstring WebView::GetAppDataDirectory()
 {
