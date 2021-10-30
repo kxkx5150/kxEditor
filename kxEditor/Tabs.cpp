@@ -52,6 +52,8 @@ int Tabs::create_tab_control(TCHAR* szFileName)
 }
 void Tabs::select_tab(int tabno)
 {
+    OutputDebugString(L"select_tab\n");
+
     m_active_tab_no = tabno;
     m_active_tab = m_tabs[tabno];
     TabCtrl_SetCurSel(m_tabhWnd, tabno);
@@ -65,7 +67,7 @@ void Tabs::select_tab(int tabno)
         m_editview->RefreshWindow();
         m_active_tab->m_docmgr->RepositionCaret();
     } else {
-        //m_active_tab->m_docmgr->hide_caret();
+        m_active_tab->m_docmgr->hide_caret();
         m_active_tab->resize_view(m_width, m_height, m_x, m_y);
         hide_webviews();
     }

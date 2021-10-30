@@ -3,8 +3,8 @@
 
 TextEditor::TextEditor(HWND hwnd, CmdMgr* cmdmgr)
 {
-    m_cmdmgr = cmdmgr;
     m_hWnd = hwnd;
+    m_cmdmgr = cmdmgr;
     memset(m_uspFontList, 0, sizeof(m_uspFontList));
     LoadRegSettings();
     ApplyRegSettings();
@@ -20,6 +20,7 @@ EditorContainer TextEditor::create_editor_container(ContMgr* contmgr, int contno
     m_hWnd_txtedit = CreateTextView(m_hwnd_tabctrl);
     m_hwnd_webview = CreateWebView(m_hwnd_tabctrl);
 
+    m_contno = contno;
     m_contmgr = contmgr;
     m_tabs = new Tabs();
     m_editview = new EditView(m_hWnd_txtedit, this, m_tabs);
@@ -28,7 +29,6 @@ EditorContainer TextEditor::create_editor_container(ContMgr* contmgr, int contno
     m_cmdmgr->set_hwnd(m_hWnd_txtedit);
     m_tabs->init_tabs(m_hWnd, m_hwnd_tabctrl, this, m_hWnd_txtedit, m_editview, m_hwnd_webview, m_webview);
 
-    m_contno = contno;
     EditorContainer econt;
     econt.prnthwnd = m_hWnd;
     econt.tabhwnd = m_hwnd_tabctrl;
@@ -100,6 +100,7 @@ LONG WINAPI TextEditor::WndProc(int contno, HWND hwnd, UINT msg, WPARAM wParam, 
         return OnMouseWheel((short)HIWORD(wParam));
 
     case WM_SETFOCUS:
+        OutputDebugString(L"fouces\n");
         m_contmgr->set_active_container(contno);
         return OnSetFocus((HWND)wParam);
 
