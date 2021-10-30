@@ -100,7 +100,7 @@ LONG WINAPI TextEditor::WndProc(int contno, HWND hwnd, UINT msg, WPARAM wParam, 
         return OnMouseWheel((short)HIWORD(wParam));
 
     case WM_SETFOCUS:
-        OutputDebugString(L"fouces\n");
+        OutputDebugString(L"ffffffffffffffffffouces\n");
         m_contmgr->set_active_container(contno);
         return OnSetFocus((HWND)wParam);
 
@@ -108,6 +108,8 @@ LONG WINAPI TextEditor::WndProc(int contno, HWND hwnd, UINT msg, WPARAM wParam, 
         return OnKillFocus((HWND)wParam);
 
     case WM_LBUTTONDOWN:
+        OutputDebugString(L"WM_LBUTTONDOWN\n");
+
         return OnLButtonDown(wParam, (short)LOWORD(lParam), (short)HIWORD(lParam));
 
     case WM_LBUTTONUP:
