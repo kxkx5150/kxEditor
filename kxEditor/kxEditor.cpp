@@ -8,6 +8,8 @@
 #pragma comment(lib, "comctl32.lib")
 #pragma comment(lib, "Shlwapi.lib")
 
+class TextEditor;
+
 ATOM InitMainView(HINSTANCE hInstance)
 {
     WNDCLASSEXW wcex;
@@ -342,18 +344,10 @@ LRESULT WINAPI TextViewWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
     case WM_NCDESTROY:
         break;
 
-    case WM_SIZE: {
-        TextEditor* pte = (TextEditor*)GetWindowLongPtr(hwnd, 0);
-        if (pte) {
-            pte->m_tabs->m_active_tab->resize_textview();
-        }
-        break;
-    }
     default:
         TextEditor* pte = (TextEditor*)GetWindowLongPtr(hwnd, 0);
-        if (pte) {
-            pte->WndProc(pte->m_contno, hwnd, msg, wParam, lParam);
-        }
+        if (pte)
+            return pte->WndProc(pte->m_contno, hwnd, msg, wParam, lParam);
     }
 
     return 0;
@@ -387,7 +381,7 @@ LRESULT CALLBACK WebViewWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
     } break;
 
     case WM_SETFOCUS: {
-        OutputDebugString(L"focus\n");
+        //OutputDebugString(L"focus\n");
         //WebView* wbv = (WebView*)GetWindowLongPtr(hWnd, 0);
         //m_contmgrs[hWnd]->set_focus_container(m_contmgrs[hWnd]->m_active_cont_no);
         break;

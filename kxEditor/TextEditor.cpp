@@ -75,9 +75,10 @@ LONG WINAPI TextEditor::WndProc(int contno, HWND hwnd, UINT msg, WPARAM wParam, 
     case WM_SETFONT:
         return OnSetFont();
 
-    case WM_SIZE:
+    case WM_SIZE: {
+        m_tabs->m_active_tab->resize_textview();
         return OnSize(wParam, LOWORD(lParam), HIWORD(lParam));
-
+    }
     case TXM_OPENFILE:
         return OpenFile((TCHAR*)lParam);
 
@@ -100,7 +101,6 @@ LONG WINAPI TextEditor::WndProc(int contno, HWND hwnd, UINT msg, WPARAM wParam, 
         return OnMouseWheel((short)HIWORD(wParam));
 
     case WM_SETFOCUS:
-        OutputDebugString(L"ffffffffffffffffffouces\n");
         m_contmgr->set_active_container(contno);
         return OnSetFocus((HWND)wParam);
 
