@@ -394,14 +394,13 @@ LRESULT WINAPI TextViewWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
     case WM_SIZE: {
         TextEditor* pte = (TextEditor*)GetWindowLongPtr(hwnd, 0);
         if (pte)
-            m_contmgrs[pte->m_hWnd]->send_resize_msg_textview(hwnd);
+            pte->m_tabs->m_active_tab->resize_textview();
         break;
     }
     default:
         TextEditor* pte = (TextEditor*)GetWindowLongPtr(hwnd, 0);
         if (pte)
             pte->WndProc(pte->m_contno, hwnd, msg, wParam, lParam);
-            //return m_contmgrs[pte->m_hWnd]->send_msg_container(hwnd, msg, wParam, lParam);
     }
 
     return 0;

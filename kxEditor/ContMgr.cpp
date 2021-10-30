@@ -60,22 +60,6 @@ void ContMgr::change_txtview()
 {
     m_containers[m_active_cont_no].tabs->m_active_tab->change_txtview();
 }
-LONG ContMgr::send_msg_container(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-    BOOL focusflg = false;
-    if (msg == WM_SETFOCUS)
-        focusflg = true;
-
-    for (int i = 0; i < m_containers.size(); i++) {
-        if (hwnd == m_containers[i].txthwnd) {
-            if (focusflg)
-                m_active_cont_no = i;
-            return m_containers[i].txteditor->WndProc(i, hwnd, msg, wParam, lParam);
-        }
-    }
-
-    return 0;
-}
 void ContMgr::resize_statusbar(int width, int height)
 {
     if (!m_hwndStatusbar)

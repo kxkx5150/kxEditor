@@ -2,12 +2,11 @@
 #include "ContMgr.h"
 #include "DocMgr.h"
 #include "EditView.h"
-#include "Tabs.h"
 #include "NodeMgr.h"
+#include "Tabs.h"
+#include "kxEditor_define.h"
 #include <crtdbg.h>
 #include <tchar.h>
-#include "kxEditor_define.h"
-
 
 BOOL InitTextView();
 BOOL InitWebView();
@@ -58,18 +57,16 @@ class TextEditor {
 
 public:
     HWND m_hWnd;
-    int m_contno;
-
-private:
-    Tabs* m_tabs = nullptr;
-    CmdMgr* m_cmdmgr = nullptr;
-
-    EditView* m_editview = nullptr;
-    WebView* m_webview = nullptr;
-
     HWND m_hWnd_txtedit;
     HWND m_hwnd_webview;
     HWND m_hwnd_tabctrl;
+
+    Tabs* m_tabs = nullptr;
+    CmdMgr* m_cmdmgr = nullptr;
+    EditView* m_editview = nullptr;
+    WebView* m_webview = nullptr;
+
+    int m_contno;
 
 private:
     // font

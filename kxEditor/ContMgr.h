@@ -32,7 +32,6 @@ public:
     void delete_all_editor_container();
     void set_focus_container(int idx);
     void open_file_container(int idx, TCHAR* szFileName);
-    LONG send_msg_container(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
     void send_resize_msg_containers(int width, int height, int x, int y);
     void send_resize_msg_textview(HWND hwnd);
