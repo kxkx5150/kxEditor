@@ -29,6 +29,9 @@ void ContMgr::create_editor_container(HWND hwnd, RECT rect)
 }
 void ContMgr::delete_editor_container(int idx)
 {
+    SetWindowLongPtr(m_containers[idx].txthwnd, 0, 0);
+    SetWindowLongPtr(m_containers[idx].webvhwnd, 0, 0);
+
     delete m_containers[idx].txteditor;
     delete m_containers[idx].editview;
     delete m_containers[idx].webview;
