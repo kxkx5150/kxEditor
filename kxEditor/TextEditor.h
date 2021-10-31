@@ -31,6 +31,7 @@ struct EditorContainer {
     EditView* editview;
     WebView* webview;
     Tabs* tabs;
+    RECT rect;
 };
 struct FONT {
     HFONT hFont;
@@ -104,7 +105,7 @@ public:
 public:
     TextEditor(HWND hwnd, CmdMgr* cmdmgr);
     ~TextEditor();
-    EditorContainer create_editor_container(ContMgr* contmgr, int contno);
+    EditorContainer create_editor_container(ContMgr* contmgr, int contno, RECT rect);
 
     void LoadRegSettings();
     void ApplyRegSettings();

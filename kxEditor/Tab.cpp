@@ -105,12 +105,12 @@ void Tab::change_view()
     if (m_width < 1 || m_height < 1)
         return;
     if (m_mode == Mode::TEXT) {
-        MoveWindow(m_txthWnd, 0, m_y, m_width, m_height, TRUE);
+        MoveWindow(m_txthWnd, m_x, m_y, m_width, m_height, TRUE);
         ShowWindow(m_webhwnd, SW_HIDE);
         ShowWindow(m_txthWnd, SW_SHOW);
 
     } else if (m_mode == Mode::TERMINAL || m_mode == Mode::WEBVIEW) {
-        MoveWindow(m_webhwnd, 0, m_y, m_width, m_height, TRUE);
+        MoveWindow(m_webhwnd, m_x, m_y, m_width, m_height, TRUE);
         ShowWindow(m_txthWnd, SW_HIDE);
         ShowWindow(m_webhwnd, SW_SHOW);
     }
@@ -132,10 +132,12 @@ void Tab::set_size(int width, int height, int x, int y)
 }
 void Tab::resize_view(int width, int height, int x, int y)
 {
+
+    if (width < 1 || height < 1)
+        return;
     set_size(width, height, x, y);
     change_view();
-    if (m_width < 1 || m_height < 1)
-        return;
+
     if (m_mode != Mode::TEXT)
         resize_webview();
 }

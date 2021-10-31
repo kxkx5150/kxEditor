@@ -95,9 +95,9 @@ void Tabs::resize_view(int width, int height, int x, int y)
     TabCtrl_AdjustRect(m_tabhWnd, FALSE, &rc);
 
     m_width = width;
-    m_height = height - rc.top;
-    m_x = x;
-    m_y = y + rc.top;
+    m_height = height - rc.top ;
+    m_x = rc.left;
+    m_y = rc.top;
     m_active_tab->resize_view(m_width, m_height, m_x, m_y);
 }
 void Tabs::close_all_tabs()

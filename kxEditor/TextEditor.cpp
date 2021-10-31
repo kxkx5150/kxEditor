@@ -14,7 +14,7 @@ TextEditor::~TextEditor()
 {
     DeleteObject(g_hFont);
 }
-EditorContainer TextEditor::create_editor_container(ContMgr* contmgr, int contno)
+EditorContainer TextEditor::create_editor_container(ContMgr* contmgr, int contno, RECT rect)
 {
     m_hwnd_tabctrl = CreateTabControl(m_hWnd);
     m_hWnd_txtedit = CreateTextView(m_hwnd_tabctrl);
@@ -39,6 +39,7 @@ EditorContainer TextEditor::create_editor_container(ContMgr* contmgr, int contno
     econt.editview = m_editview;
     econt.webview = m_webview;
     econt.tabs = m_tabs;
+    econt.rect = rect;
     return econt;
 }
 LONG TextEditor::OpenFile(TCHAR* szFileName)
@@ -109,8 +110,6 @@ LONG WINAPI TextEditor::WndProc(int contno, HWND hwnd, UINT msg, WPARAM wParam, 
         return OnKillFocus((HWND)wParam);
 
     case WM_LBUTTONDOWN:
-        OutputDebugString(L"WM_LBUTTONDOWN\n");
-
         return OnLButtonDown(wParam, (short)LOWORD(lParam), (short)HIWORD(lParam));
 
     case WM_LBUTTONUP:

@@ -225,8 +225,10 @@ void create_manager(HWND hWnd)
     if (!m_nodemgr)
         m_nodemgr = new NodeMgr();
 
+    RECT rect;
+    GetClientRect(hWnd, &rect);
     m_contmgrs[hWnd] = new ContMgr(m_nodemgr);
-    m_contmgrs[hWnd]->create_editor_container(hWnd);
+    m_contmgrs[hWnd]->create_editor_container(hWnd, rect);
 }
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -314,7 +316,6 @@ LRESULT CALLBACK WndCommandProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 
     case ID_SPLIT_VERTICAL: {
         m_contmgrs[hWnd]->split_vertical();
-
         RECT rect;
         GetClientRect(hWnd, &rect);
         int width = rect.right - rect.left;
@@ -324,7 +325,12 @@ LRESULT CALLBACK WndCommandProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
     }
 
     case ID_SPLIT_HORIZONTAL: {
-
+        m_contmgrs[hWnd]->split_horizontal();
+        RECT rect;
+        GetClientRect(hWnd, &rect);
+        int width = rect.right - rect.left;
+        int height = rect.bottom - rect.top;
+        SetWindSize(hWnd, width, height);
         return 0;
     }
 
@@ -336,6 +342,7 @@ LRESULT CALLBACK WndCommandProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 }
 LRESULT WINAPI TextViewWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
+    TextEditor* pte = (TextEditor*)GetWindowLongPtr(hwnd, 0);
     switch (msg) {
     case WM_NCCREATE:
         return TRUE;
@@ -344,7 +351,6 @@ LRESULT WINAPI TextViewWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
         break;
 
     default:
-        TextEditor* pte = (TextEditor*)GetWindowLongPtr(hwnd, 0);
         if (pte)
             return pte->WndProc(pte->m_contno, hwnd, msg, wParam, lParam);
     }
