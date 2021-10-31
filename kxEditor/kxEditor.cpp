@@ -216,8 +216,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hpins, _In_ L
     }
     return (int)msg.wParam;
 }
-void SetWindSize(HWND hwnd, int width, int height)
+void SetWindSize(HWND hwnd)
 {
+    RECT rect;
+    GetClientRect(hwnd, &rect);
+    int width = rect.right - rect.left;
+    int height = rect.bottom - rect.top;
     m_contmgrs[hwnd]->send_resize_msg_containers(width, height, 0, 0);
 }
 void create_manager(HWND hWnd)
@@ -248,7 +252,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     } break;
 
     case WM_SIZE: {
-        SetWindSize(hWnd, (short)LOWORD(lParam), (short)HIWORD(lParam));
+        SetWindSize(hWnd);
     } break;
 
     case WM_SETFOCUS: {
@@ -316,21 +320,13 @@ LRESULT CALLBACK WndCommandProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 
     case ID_SPLIT_VERTICAL: {
         m_contmgrs[hWnd]->split_vertical();
-        RECT rect;
-        GetClientRect(hWnd, &rect);
-        int width = rect.right - rect.left;
-        int height = rect.bottom - rect.top;
-        SetWindSize(hWnd, width, height);
+        SetWindSize(hWnd);
         return 0;
     }
 
     case ID_SPLIT_HORIZONTAL: {
         m_contmgrs[hWnd]->split_horizontal();
-        RECT rect;
-        GetClientRect(hWnd, &rect);
-        int width = rect.right - rect.left;
-        int height = rect.bottom - rect.top;
-        SetWindSize(hWnd, width, height);
+        SetWindSize(hWnd);
         return 0;
     }
 

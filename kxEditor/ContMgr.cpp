@@ -5,7 +5,6 @@
 ContMgr::ContMgr(NodeMgr* nodemgr)
 {
     m_nodemgr = nodemgr;
-    m_cmdmgr = new CmdMgr(nodemgr, this);
 }
 ContMgr::~ContMgr()
 {
@@ -16,15 +15,16 @@ void ContMgr::create_editor_container(HWND hwnd, RECT rect)
 {
     if (!m_mainhwnd) {
         m_mainhwnd = hwnd;
+        m_cmdmgr = new CmdMgr(m_nodemgr, this);
         m_hwndStatusbar = CreateStatusBar(hwnd);
         int sheight = resize_statusbar(rect.right - rect.left, rect.bottom - rect.top);
         rect.bottom -= sheight + 1;
     }
 
-    TextEditor* g_ptv = new TextEditor(hwnd, m_cmdmgr);
-    EditorContainer econt = g_ptv->create_editor_container(this, m_containers.size(), rect);
+    auto g_ptv = new TextEditor(hwnd, m_cmdmgr);
+    auto econt = g_ptv->create_editor_container(this, m_containers.size(), rect);
     m_containers.push_back(econt);
-    SetWindowLongPtr(econt.txthwnd, 0, (LONG)g_ptv);
+    SetWindowLongPtr(econt.txthwnd, 0, (LONG)econt.txteditor);
     SetWindowLongPtr(econt.webvhwnd, 0, (LONG)econt.webview);
 }
 void ContMgr::delete_editor_container(int idx)
