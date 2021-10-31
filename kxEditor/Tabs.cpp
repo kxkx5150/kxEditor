@@ -39,6 +39,9 @@ LONG Tabs::create_tab(TCHAR* szFileName)
     }
     tab->set_size(m_width, m_height, m_x, m_y);
     select_tab(tabid);
+    m_editview->reset_usp_cache();
+    m_txteditr->UpdateMetrics();
+    m_active_tab->m_docmgr->set_caret(0, 0);
     return m_tabid;
 }
 int Tabs::create_tab_control(TCHAR* szFileName)
