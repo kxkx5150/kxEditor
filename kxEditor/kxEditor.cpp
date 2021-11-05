@@ -338,7 +338,6 @@ LRESULT CALLBACK WndCommandProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 }
 LRESULT WINAPI TextViewWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-    TextEditor* pte = (TextEditor*)GetWindowLongPtr(hwnd, 0);
     switch (msg) {
     case WM_NCCREATE:
         return TRUE;
@@ -347,6 +346,7 @@ LRESULT WINAPI TextViewWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
         break;
 
     default:
+        TextEditor* pte = (TextEditor*)GetWindowLongPtr(hwnd, 0);
         if (pte)
             return pte->WndProc(pte->m_contno, hwnd, msg, wParam, lParam);
     }
@@ -363,40 +363,20 @@ LRESULT CALLBACK WebViewWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
     case WM_NCDESTROY:
         return 0;
 
-    case WM_GETMINMAXINFO: {
-
-    } break;
-
-    case WM_DPICHANGED: {
-
-    } break;
-
-    case WM_CLOSE: {
-
-    } break;
-
     case WM_PAINT: {
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hWnd, &ps);
         EndPaint(hWnd, &ps);
     } break;
 
-    case WM_SETFOCUS: {
-        //WebView* wbv = (WebView*)GetWindowLongPtr(hWnd, 0);
-        //m_contmgrs[hWnd]->set_focus_container(m_contmgrs[hWnd]->m_active_cont_no);
-        break;
-    }
     case WM_SIZE: {
         WebView* wbv = (WebView*)GetWindowLongPtr(hWnd, 0);
         if (wbv)
             m_contmgrs[wbv->m_hWnd]->send_resize_msg_webview(hWnd);
-        break;
-    }
-    default:
-        return DefWindowProc(hWnd, message, wParam, lParam);
+    } break;
     }
 
-    return 0;
+    return DefWindowProc(hWnd, message, wParam, lParam);
 }
 LRESULT CALLBACK EditWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -411,9 +391,7 @@ LRESULT CALLBACK EditWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
         m_contmgrs[mhwnd]->check_active_tabctrl(hWnd);
 
     } break;
-    default:
-        return CallWindowProc(defEditWndProcs[hWnd], hWnd, message, wParam, lParam);
     }
 
-    return 0;
+    return CallWindowProc(defEditWndProcs[hWnd], hWnd, message, wParam, lParam);
 }
