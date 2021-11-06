@@ -121,18 +121,20 @@ wss.on('connection', function connection(ws, req) {
 
   clearTimeout(killtimerid);
   ws.on('message', function incoming(message) {
-    const obj = JSON.parse(message);
-    let cb = (json) => {
-      ws.send(JSON.stringify(json));
-    };
-    kparser.parse(obj, cb);
+    // const obj = JSON.parse(message);
+    // let cb = (json) => {
+    //   ws.send(JSON.stringify(json));
+    // };
+    // kparser.parse(obj, cb);
+    ws.send("aaaaaaaaaaaaaaaa");
+
   });
   ws.on('close', function () {
     console.log('Client disconnected');
-    clearTimeout(killtimerid);
-    killtimerid = setTimeout(()=>{
-      killNodejs();
-    },1000);
+    // clearTimeout(killtimerid);
+    // killtimerid = setTimeout(()=>{
+    //   killNodejs();
+    // },1000);
   });
   ws.on('error', function (err) {
     console.log('Error: ' + err.code);

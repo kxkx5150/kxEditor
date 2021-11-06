@@ -8,6 +8,8 @@
 #include <boost/beast/http.hpp>
 #include <boost/beast/version.hpp>
 #include <cpprest/http_client.h>
+#include "websocket_client.h"
+
 #include "NodeMgr.h"
 #include "Unicode.h"
 #include "Shellapi.h"
@@ -43,7 +45,7 @@ NodeMgr::NodeMgr()
 NodeMgr::~NodeMgr()
 {
     beast_ws_close();
-    //terminate_node();
+    terminate_node();
 }
 DWORD RunSilent(TCHAR* strFunct, TCHAR* strstrParams)
 {
@@ -200,6 +202,10 @@ int NodeMgr::beast_ws_start()
 {
     std::string host = "localhost";
     const char port[] = "3001";
+
+
+    //auto wsc = new websocket_client("ws://localhost:3001");
+    //wsc->start();
 
     try {
         auto const results = resolver.resolve(host, port);

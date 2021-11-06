@@ -81,6 +81,9 @@
     <ClInclude Include="WebTab.h">
       <Filter>Header Files\Tabs</Filter>
     </ClInclude>
+    <ClInclude Include="websocket_client.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxEditor.cpp">
@@ -151,6 +154,9 @@
     </ClCompile>
     <ClCompile Include="WebTab.cpp">
       <Filter>Source Files\Tabs</Filter>
+    </ClCompile>
+    <ClCompile Include="websocket_client.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
