@@ -82,6 +82,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnabled>false</VcpkgEnabled>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -110,14 +113,14 @@
       <Optimization>Disabled</Optimization>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>C:\boost_1_77_0\include\boost-1_77;C:\Users\kunim\source\repos\kxEditor\json-3.10.3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\boost_1_77_0\stage\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(ProjectDir)wvbrowser_ui" "$(OutDir)wvbrowser_ui" /S /I /Y</Command>
@@ -217,6 +220,8 @@
     <Import Project="..\packages\cpprestsdk.v141.2.10.12.1\build\native\cpprestsdk.v141.targets" Condition="Exists('..\packages\cpprestsdk.v141.2.10.12.1\build\native\cpprestsdk.v141.targets')" />
     <Import Project="..\packages\Microsoft.Web.WebView2.1.0.1020.30\build\native\Microsoft.Web.WebView2.targets" Condition="Exists('..\packages\Microsoft.Web.WebView2.1.0.1020.30\build\native\Microsoft.Web.WebView2.targets')" />
     <Import Project="..\packages\Microsoft.Windows.ImplementationLibrary.1.0.211019.2\build\native\Microsoft.Windows.ImplementationLibrary.targets" Condition="Exists('..\packages\Microsoft.Windows.ImplementationLibrary.1.0.211019.2\build\native\Microsoft.Windows.ImplementationLibrary.targets')" />
+    <Import Project="..\packages\boost.1.77.0.0\build\boost.targets" Condition="Exists('..\packages\boost.1.77.0.0\build\boost.targets')" />
+    <Import Project="..\packages\nlohmann.json.3.10.4\build\native\nlohmann.json.targets" Condition="Exists('..\packages\nlohmann.json.3.10.4\build\native\nlohmann.json.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -225,5 +230,7 @@
     <Error Condition="!Exists('..\packages\cpprestsdk.v141.2.10.12.1\build\native\cpprestsdk.v141.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cpprestsdk.v141.2.10.12.1\build\native\cpprestsdk.v141.targets'))" />
     <Error Condition="!Exists('..\packages\Microsoft.Web.WebView2.1.0.1020.30\build\native\Microsoft.Web.WebView2.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Web.WebView2.1.0.1020.30\build\native\Microsoft.Web.WebView2.targets'))" />
     <Error Condition="!Exists('..\packages\Microsoft.Windows.ImplementationLibrary.1.0.211019.2\build\native\Microsoft.Windows.ImplementationLibrary.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Windows.ImplementationLibrary.1.0.211019.2\build\native\Microsoft.Windows.ImplementationLibrary.targets'))" />
+    <Error Condition="!Exists('..\packages\boost.1.77.0.0\build\boost.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost.1.77.0.0\build\boost.targets'))" />
+    <Error Condition="!Exists('..\packages\nlohmann.json.3.10.4\build\native\nlohmann.json.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\nlohmann.json.3.10.4\build\native\nlohmann.json.targets'))" />
   </Target>
 </Project>
