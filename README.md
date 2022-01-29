@@ -3,6 +3,11 @@
 
 UTF-8, UTF-8 BOM
 
+<br><br>
+
+Webview2 Runtime (required)  
+https://developer.microsoft.com/en-us/microsoft-edge/webview2/#download-section  
+
 <br><br><br>
 
 C++ win32 api app
